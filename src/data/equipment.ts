@@ -1,0 +1,49 @@
+import type { Crop, Localized, Method } from './garden';
+import { defaultSystem, type HydroSystemId } from './hydroSystems';
+const b = (en: string, id: string): Localized => ({ en, id });
+export interface EquipmentItem { id: string; name: Localized; purpose: Localized; required: boolean; group: 'grow' | 'measure' | 'care'; }
+const item = (id: string, en: string, ind: string, purposeEn: string, purposeId: string, group: EquipmentItem['group'] = 'grow', required = true): EquipmentItem => ({ id, name: b(en, ind), purpose: b(purposeEn, purposeId), required, group });
+const tank = item('reservoir', 'Opaque food-safe reservoir & lid', 'Tandon gelap aman pangan & penutup', 'Holds the nutrient solution; keep light and rain out.', 'Menampung larutan nutrisi; menghalangi cahaya dan hujan.');
+const pots = item('net-pots', 'Net pots', 'Net pot', 'Supports rooted plugs while allowing roots to reach the solution.', 'Menopang media bibit agar akar dapat mencapai larutan.');
+const waterPump = item('water-pump', 'Water pump', 'Pompa air', 'Choose a pump rated for your kit’s flow, lift and operating schedule.', 'Pilih pompa sesuai debit, tinggi angkat dan jadwal operasi kit.');
+const tubing = item('feed-return', 'Feed hose, return pipe & fittings', 'Selang suplai, pipa balik & sambungan', 'Connect the nutrient circuit and test every joint for leaks.', 'Menghubungkan aliran nutrisi; uji kebocoran setiap sambungan.');
+const airPump = item('air-pump', 'Air pump', 'Pompa udara', 'Supplies air continuously; keep it dry and follow the installation manual.', 'Memasok udara terus-menerus; jaga kering dan ikuti manual pemasangan.');
+const airKit = item('air-kit', 'Air stone, air hose & backflow protection', 'Batu aerasi, selang udara & pencegah aliran balik', 'Disperses air in the solution. Fit a check valve or position the pump above water as its manual directs.', 'Menyebarkan udara dalam larutan. Pasang katup satu arah atau letakkan pompa di atas air sesuai manual.');
+const channel = item('channel', 'Food-safe growing channel & secure stand', 'Talang tanam aman pangan & penyangga kokoh', 'Supports plants and the nutrient flow without sagging.', 'Menopang tanaman dan aliran nutrisi tanpa melendut.');
+const mediaPot = item('media-pot', 'Draining growing pot & airy medium', 'Pot tanam berdrainase & media berpori', 'Use prepared coco/perlite or the kit’s medium; keep the crown above wet media.', 'Gunakan coco/perlit siap pakai atau media sesuai kit; jaga pangkal tanaman di atas media basah.');
+export const systemEquipment: Record<HydroSystemId, EquipmentItem[]> = {
+  nft: [tank, channel, pots, waterPump, tubing],
+  dft: [tank, channel, pots, waterPump, tubing, item('overflow', 'Overflow / water-level fitting', 'Sambungan overflow / pengatur tinggi air', 'Sets the retained solution depth; test the overflow before planting.', 'Mengatur kedalaman larutan yang tertahan; uji overflow sebelum menanam.'), airPump, airKit],
+  wick: [tank, mediaPot, item('wick', 'Absorbent synthetic wicks', 'Sumbu sintetis penyerap', 'Transfers solution to the upper medium by capillary action. Test uptake before planting.', 'Menyalurkan larutan ke media atas lewat kapilaritas. Uji daya serap sebelum menanam.')],
+  kratky: [tank, pots],
+  dwc: [tank, pots, airPump, airKit],
+  drip: [tank, mediaPot, waterPump, item('drip-line', 'Feed tubing & drip emitters', 'Selang suplai & emitter tetes', 'Delivers solution to each pot; check each emitter for even flow.', 'Mengalirkan larutan ke tiap pot; periksa keseragaman tetesan.'), item('filter', 'Irrigation filter', 'Filter irigasi', 'Helps prevent emitter blockage; clean it regularly.', 'Membantu mencegah emitter tersumbat; bersihkan berkala.'), item('controller', 'Irrigation timer / controller', 'Timer / pengontrol irigasi', 'Sets a schedule suited to your medium and crop; test moisture instead of copying a universal interval.', 'Mengatur jadwal sesuai media dan tanaman; uji kelembapan, bukan menyalin interval universal.'), item('drain', 'Drain tray & collection / return line', 'Baki drainase & jalur penampung / balik', 'Collects drainage without leaving the roots in standing water.', 'Menampung drainase tanpa membiarkan akar dalam genangan.')],
+};
+export function getEquipment(crop: Crop, method: Method, systemId: HydroSystemId = defaultSystem(crop)): EquipmentItem[] {
+  const common = [
+    item('seeds', `${crop.name.en} seeds or healthy seedlings`, `Benih atau bibit sehat ${crop.name.id.toLowerCase()}`, 'Choose a labelled edible cultivar suited to your conditions.', 'Pilih varietas pangan berlabel yang sesuai kondisi Anda.'),
+    item('seed-tray', 'Seed tray / small seedling pots', 'Baki semai / pot bibit kecil', 'Keeps seedlings organized; use clean containers with drainage.', 'Menata bibit; gunakan wadah bersih berdrainase.'),
+    item('labels', 'Plant labels & waterproof marker', 'Label tanaman & spidol tahan air', 'Records the crop, cultivar and sowing date.', 'Mencatat tanaman, varietas dan tanggal semai.', 'care', false),
+    item('snips', 'Clean scissors / pruning snips', 'Gunting bersih / gunting pangkas', 'Harvests leaves and trims damaged growth without tearing stems.', 'Memanen daun dan memangkas bagian rusak tanpa merobek batang.', 'care'),
+    item('gloves', 'Gardening gloves', 'Sarung tangan berkebun', 'Useful for handling potting mix and cleaning tools. Use the protection specified on nutrient or pH-product labels.', 'Membantu saat menangani media pot dan membersihkan alat. Gunakan perlindungan sesuai label nutrisi atau pengatur pH.', 'care', false),
+    item('shade', 'Shade cloth / rain shelter', 'Paranet / pelindung hujan', 'Optional depending on the site; reduces harsh sun or pounding rain without cutting all light.', 'Sesuai kebutuhan lokasi; mengurangi terik atau hujan deras tanpa menutup seluruh cahaya.', 'care', false),
+    item('thermometer', method === 'hydro' ? 'Air & solution thermometer(s)' : 'Air thermometer', method === 'hydro' ? 'Termometer udara & larutan' : 'Termometer udara', method === 'hydro' ? 'Use a shaded air sensor and a waterproof probe for the reservoir; an EC meter with temperature can cover the solution reading.' : 'Measures air around the plant in shade, away from direct sun.', method === 'hydro' ? 'Gunakan sensor udara terlindung matahari dan probe tahan air untuk tandon; meter EC bersuhu dapat mengukur larutan.' : 'Mengukur udara di sekitar tanaman, terlindung matahari langsung.', 'measure'),
+  ];
+  const methodItems = method === 'soil' ? [
+    item('soil-pot', `Drainage pot, at least ${crop.pot} deep`, `Pot berdrainase, kedalaman minimal ${crop.pot}`, 'Gives roots space and drains excess water; empty any saucer after watering.', 'Memberi ruang akar dan membuang air berlebih; kosongkan tatakan setelah menyiram.'),
+    item('soil-mix', 'Container potting mix & mature compost', 'Media pot & kompos matang', 'A loose growing medium; avoid heavy garden soil alone.', 'Media tumbuh gembur; hindari hanya memakai tanah kebun berat.'),
+    item('watering-can', 'Watering can with fine rose', 'Penyiram dengan kepala halus', 'Waters gently without washing away seeds or compacting the mix.', 'Menyiram lembut tanpa menghanyutkan benih atau memadatkan media.'),
+    item('trowel', 'Hand trowel / scoop', 'Sekop tangan / sendok media', 'Fills pots and moves mix; a dedicated clean scoop is enough for a small garden.' , 'Mengisi pot dan memindahkan media; sendok khusus yang bersih cukup untuk kebun kecil.', 'care'),
+    item('soil-feed', 'Crop-appropriate fertilizer, if needed', 'Pupuk sesuai tanaman, bila diperlukan', 'Choose according to the potting mix, soil test and product label; do not copy hydroponic PPM targets.', 'Pilih sesuai media, hasil uji tanah dan label produk; jangan memakai target PPM hidroponik.', 'care', false),
+  ] : [
+    ...systemEquipment[systemId],
+    item('seed-plugs', 'Clean hydroponic propagation plugs', 'Media semai hidroponik bersih', 'Prepared coco or rockwool supports germination; follow its preparation instructions.', 'Coco siap pakai atau rockwool menopang semai; ikuti petunjuk persiapannya.'),
+    item('nutrients', 'Complete hydroponic nutrients & clean water', 'Nutrisi hidroponik lengkap & air bersih', 'Follow the crop-stage product label and add concentrates separately into water.', 'Ikuti label produk sesuai fase tanaman dan tambahkan konsentrat terpisah ke air.'),
+    item('ph-meter', 'pH meter & calibration buffers', 'pH meter & larutan kalibrasi', 'Checks nutrient acidity after mixing. Calibrate and store the probe as its manual directs.', 'Memeriksa keasaman setelah pencampuran. Kalibrasi dan simpan probe sesuai manual.', 'measure'),
+    item('ec-meter', 'EC / TDS meter & conductivity standard', 'EC / TDS meter & larutan standar', 'Measures solution strength. An EC meter is enough; match 500/700 scale if using TDS/PPM.', 'Mengukur kepekatan larutan. Meter EC sudah cukup; cocokkan skala 500/700 jika memakai TDS/PPM.', 'measure'),
+    item('mix-tools', 'Mixing bucket, measuring jug, syringe & spoon', 'Ember pencampur, gelas ukur, spuit & pengaduk', 'Measures small doses and mixes solution in a clean dedicated bucket; keep separate from food utensils.', 'Mengukur dosis kecil dan mencampur larutan dalam ember bersih khusus; pisahkan dari alat makan.', 'measure'),
+    item('ph-adjuster', 'Hydroponic pH up / down, if needed', 'Pengatur pH up / down hidroponik, bila diperlukan', 'Only use if readings require it; follow the label, add small amounts and remeasure.', 'Gunakan hanya jika bacaan memerlukan; ikuti label, tambahkan sedikit dan ukur kembali.', 'measure', false),
+  ];
+  if (crop.id === 'chilli') methodItems.push(item('stake', 'Supporting stake & soft ties', 'Ajir penyangga & tali lembut', 'Supports fruiting branches without pinching the stem.', 'Menopang cabang berbuah tanpa menjepit batang.', 'care'));
+  return [...methodItems, ...common];
+}
