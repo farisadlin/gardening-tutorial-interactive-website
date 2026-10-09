@@ -11,7 +11,24 @@ export default function HydroDiagram({ crop, systemId, stage, language, thumbnai
   const labels = <g fill="#344f3c" fontSize="12" fontFamily="sans-serif"><text x="18" y="37">{system.name[language]}</text><text x="18" y="305">{system.power[language]}</text></g>;
   return <svg viewBox="0 0 440 320" className={thumbnail ? 'system-thumbnail' : 'static-diagram'} role={thumbnail ? undefined : 'img'} aria-hidden={thumbnail || undefined} aria-label={thumbnail ? undefined : t(`${system.name.en}: ${crop.name.en} at ${stage}`, `${system.name.id}: ${crop.name.id}, fase ${stage}`)}>
     <ellipse cx="220" cy="295" rx="150" ry="5" fill="#d9dfcb"/>
-    {channel ? <>
+    {systemId === 'dutch-bucket' ? <>
+      <path d="M320 240H420V290H320Z" fill="#647e70"/><path d="M328 258H412V283H328Z" fill="#a0cabd"/>
+      <path d="M368 266H404V105H65" stroke="#547560" strokeWidth="5" fill="none"/>
+      {[94, 221].map(x => <g key={x}>
+        <rect x={x-42} y="163" width="84" height="78" rx="5" fill="#d8d3b7" stroke="#a2a68a" strokeWidth="2"/>
+        <rect x={x-34} y="172" width="68" height="57" fill="#b8b197"/>
+        <rect x={x-34} y="225" width="68" height="8" fill="#9dcac0"/>
+        {growth > 0 && plant(x, 161, .65+growth*.35)}
+        <path d={`M${x+15} 105V160`} stroke="#547560" strokeWidth="3" fill="none"/>
+        <circle cx={x+15} cy="168" r="3" fill="#78b7a7"/>
+        <path d={`M${x+34} 230h16v29`} stroke="#819779" strokeWidth="5" fill="none"/>
+        <path d={`M${x-23} 176v-70`} stroke="#a69a70" strokeWidth="3"/>
+      </g>)}
+      <path d="M75 259H350V275" stroke="#819779" strokeWidth="7" fill="none"/>
+      <path d="m277 263 8-4-8-4" stroke="#4c9180" fill="none" strokeWidth="2"/>
+      <rect x="362" y="260" width="15" height="14" rx="3" fill="#3c5f56"/>
+      {!thumbnail && <g fill="#344f3c" fontSize="11" fontFamily="sans-serif"><text x="250" y="92">{t('Drip feed', 'Suplai tetes')}</text><text x="25" y="285">{t('Common return pipe', 'Pipa balik bersama')}</text><text x="270" y="221">{t('Screened outlet', 'Keluaran bersaringan')}</text><path d="M270 225H257" stroke="#829576"/></g>}
+    </> : channel ? <>
       <rect x="60" y="161" width="304" height="63" rx="25" fill="#e7e9df" stroke="#b9c3b1" strokeWidth="3"/><rect x="68" y="170" width="288" height="47" rx="18" fill="#f5f5ec"/><ellipse cx="61" cy="192" rx="8" ry="30" fill="#d5dccc"/><ellipse cx="363" cy="192" rx="8" ry="30" fill="#d5dccc"/>
       <path d={systemId === 'nft' ? 'M76 209H348Q342 217 331 217H93Q82 217 76 209Z' : 'M70 181H354V199Q351 217 331 217H93Q73 217 70 199Z'} fill="#9dcac0"/>
       <path d="M165 246H272V290H165Z" fill="#617f70"/><path d="M171 257H266V284H171Z" fill="#acd3c6"/>

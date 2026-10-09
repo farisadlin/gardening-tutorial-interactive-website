@@ -3,7 +3,7 @@ import { crops, getTutorial } from './garden';
 import { getEquipment } from './equipment';
 describe('growing equipment requirements', () => {
   const pak = crops[0];
-  const ids = (system: 'nft'|'dft'|'wick'|'kratky'|'dwc'|'drip') => getEquipment(pak, 'hydro', system).filter(item => item.required).map(item => item.id);
+  const ids = (system: 'nft'|'dft'|'wick'|'kratky'|'dwc'|'drip'|'dutch-bucket') => getEquipment(pak, 'hydro', system).filter(item => item.required).map(item => item.id);
   it('does not ask passive growers to buy powered circulation equipment', () => {
     for (const system of ['wick', 'kratky'] as const) {
       expect(ids(system)).not.toContain('water-pump');
@@ -28,5 +28,13 @@ describe('growing equipment requirements', () => {
     expect(getEquipment(pak, 'soil').some(i => i.id === 'stake')).toBe(false);
     expect(getEquipment(pak, 'soil').some(i => i.id === 'ec-meter')).toBe(false);
     expect(getTutorial(chilli, 'hydro', 'drip').equipment.some(i => i.en.includes('Supporting stake'))).toBe(true);
+  });
+  it('includes bucket outlets, return plumbing and support for the chilli Dutch Bucket path', () => {
+    const chilli = crops.find(c => c.id === 'chilli')!;
+    const ids = getEquipment(chilli, 'hydro', 'dutch-bucket').map(item => item.id);
+    for (const id of ['bato-buckets', 'bucket-outlets', 'water-pump', 'drip-line', 'filter', 'controller', 'stake']) expect(ids).toContain(id);
+    const tutorial = getTutorial(chilli, 'hydro', 'dutch-bucket');
+    expect(tutorial.id).toBe('chilli:hydro:dutch-bucket');
+    expect(tutorial.sources.some(source => source.url.includes('em-9456'))).toBe(true);
   });
 });

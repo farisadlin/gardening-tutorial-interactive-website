@@ -10,20 +10,27 @@
     "check:content": "tsx scripts/validate-content.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check": "npm run check:content && npm test && npm run build"
+    "check": "npm run check:content && npm test && npm run build",
+    "motion:studio": "remotion studio src/remotion/index.tsx",
+    "motion:render": "remotion render src/remotion/index.tsx Photosynthesis-soil-en artifacts/photosynthesis-soil-en.mp4"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@react-three/drei": "^10.7.0",
     "@react-three/fiber": "^9.3.0",
+    "@remotion/player": "4.0.534",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.468.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.0",
+    "remotion": "4.0.534",
     "three": "^0.180.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.55.0",
+    "@remotion/cli": "4.0.534",
     "@types/node": "^22.18.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",

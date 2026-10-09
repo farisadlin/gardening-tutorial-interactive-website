@@ -56,17 +56,37 @@ export default function HydroHardware({ plant, ...props }: ModelProps & { plant:
   const system = hydroSystems.find(s => s.id === props.systemId)!;
   const id = system.id;
   const channel = id === 'nft' || id === 'dft';
-  const medium = id === 'wick' || id === 'drip';
+  const medium = id === 'wick' || id === 'drip' || id === 'dutch-bucket';
   const { growth, focus } = scenePresets[stage];
   const seedPosition: Point = channel ? [-1.5, .2, .6] : [1.1, .2, .65];
   const labels = [
-    { key: 'container', label: b('Reservoir', 'Tandon'), position: (channel ? [-.85, .35, .55] : id === 'drip' ? [1.55, .3, .5] : [-.85, .35, .4]) as Point },
+    { key: 'container', label: b('Reservoir', 'Tandon'), position: (channel ? [-.85, .35, .55] : ['drip', 'dutch-bucket'].includes(id) ? [1.55, .3, .5] : [-.85, .35, .4]) as Point },
     { key: 'roots', label: system.rootLabel, position: (channel ? [.1, 1.07, .42] : medium ? [.45, 1, .38] : [.37, .37, .5]) as Point },
     { key: stage === 'sow' ? 'seed' : 'leaves', label: stage === 'sow' ? b('Seed plug', 'Media semai') : b('Growing point', 'Titik tumbuh'), position: (stage === 'sow' ? [seedPosition[0], seedPosition[1] + .18, seedPosition[2]] : channel ? [.3, 1.45 + growth * .5, .25] : medium ? [.4, 1.45 + growth * .5, .2] : [.4, .94 + growth * .8, .25]) as Point },
   ];
   return <group>
-    <mesh position={[0, -.035, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><circleGeometry args={[channel ? 2.45 : id === 'drip' ? 2.1 : 1.7, 64]}/><meshStandardMaterial color="#e5e8da"/></mesh>
-    {channel ? <>
+    <mesh position={[0, -.035, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><circleGeometry args={[channel ? 2.45 : ['drip', 'dutch-bucket'].includes(id) ? 2.1 : 1.7, 64]}/><meshStandardMaterial color="#e5e8da"/></mesh>
+    {id === 'dutch-bucket' ? <>
+      <Tank position={[1.45, 0, 0]} cutaway={cutaway} water={.38}/>
+      <Box position={[1.45, .12, .15]} size={[.18, .14, .15]} color="#405e53"/>
+      {[0, -1.35].map(x => <group key={x} position={[x, 0, 0]}>
+        <Box position={[0, .61, 0]} size={[.95, .04, .85]} color="#b9b39a"/>
+        <Box position={[-.46, .92, 0]} size={[.04, .62, .85]} color="#d8d3b7"/>
+        <Box position={[.46, .92, 0]} size={[.04, .62, .85]} color="#d8d3b7"/>
+        <Box position={[0, .92, -.4]} size={[.95, .62, .04]} color="#d8d3b7"/>
+        {!cutaway && <Box position={[0, .92, .4]} size={[.95, .62, .04]} color="#d8d3b7"/>}
+        <Box position={[0, .98, cutaway ? -.15 : 0]} size={[.87, .49, cutaway ? .5 : .75]} color="#b8b197"/>
+        <Box position={[0, .68, 0]} size={[.86, .08, .75]} color="#9dcac0" translucent/>
+        <group position={[0, .42, 0]}>{plant}</group>
+        {growth > 0 && cutaway && <Roots position={[0, 1.17, .18]} length={.34} spread={.2}/>}
+        <Tube points={[[.24, 1.7, -.15], [.24, 1.3, .08]]} color="#536f50"/>
+        <Tube points={[[.4, .7, .2], [.53, .7, .25], [.53, .53, .52]]} color="#819779" radius={.045}/>
+        <Box position={[-.24, 1.55, -.1]} size={[.03, 1.85, .03]} color="#a69a70"/>
+        {[0,1,2].map(i => <mesh key={i} position={[.24, 1.25-i*.06, .08]}><sphereGeometry args={[.012,8,8]}/><meshStandardMaterial color="#75b5a6"/></mesh>)}
+      </group>)}
+      <Tube points={[[1.45,.17,.12],[1.8,.18,-.15],[1.8,1.7,-.15],[-1.2,1.7,-.15]]} color="#536f50"/>
+      <Tube points={[[-1.2,.53,.52],[.7,.53,.52],[1.5,.22,.3]]} color="#819779" radius={.065}/>
+    </> : channel ? <>
       <Tank cutaway={cutaway} water={.4}/>
       <group rotation={[0, 0, id === 'nft' ? -.025 : 0]}>
       <PvcPipe cutaway={cutaway} deep={id === 'dft'}/>

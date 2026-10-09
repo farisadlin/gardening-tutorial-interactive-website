@@ -3,7 +3,11 @@ import { emptyState, sanitizeState, countComplete } from './state';
 import { tutorials } from './data/garden';
 describe('Saved learning state', () => {
   it('recovers safely from corrupted and unsupported saved data', () => {
-    for (const invalid of [null, [], 'bad', { version: 2 }, { version: 1, progress: { 'pak-choi:soil': null } }]) expect(sanitizeState(invalid).language).toBe('en');
+    for (const invalid of [null, [], 'bad', { version: 2 }, { version: 1, progress: { 'pak-choi:soil': null } }]) expect(sanitizeState(invalid).language).toBe('id');
+  });
+  it('defaults to Indonesian while preserving an explicit English choice', () => {
+    expect(emptyState().language).toBe('id');
+    expect(sanitizeState({ version: 1, language: 'en', progress: {} }).language).toBe('en');
   });
   it('keeps language but removes invalid task and answer references', () => {
     const result = sanitizeState({ version: 1, language: 'id', progress: { 'pak-choi:soil': { prepare: { checks: [0, 0, -1, 999, 1.5], answer: 7, complete: true } }, invented: {} } });

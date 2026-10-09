@@ -1,0 +1,30 @@
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('Dutch Bucket home preview links to a bilingual chilli guide with distinct equipment and diagram', async ({ page }) => {
+  await page.goto('/');
+  const home = page.locator('.insights-explorer');
+  await home.getByRole('button', { name: 'Dutch Bucket', exact: true }).click();
+  await expect(home.getByRole('img')).toHaveAttribute('aria-label', /^Dutch Bucket: Chilli/);
+  await expect(home).toContainText('shared return pipe');
+  await home.getByRole('link', { name: 'Explore this system' }).click();
+  await expect(page).toHaveURL(/plants\/chilli\?method=hydro&system=dutch-bucket#hydro-systems$/);
+  await expect(page.locator('.system-card.selected')).toContainText('Dutch Bucket');
+  await expect(page.locator('.equipment-guide')).toContainText('Screened drain elbows');
+  await page.locator('.system-start').getByRole('link').click();
+  await expect(page).toHaveURL(/learn\/chilli\/hydro\/prepare\?system=dutch-bucket$/);
+  await page.getByRole('checkbox').first().check();
+  await page.getByLabel('Hydroponic system', { exact: true }).selectOption('drip');
+  await expect(page.getByRole('checkbox').first()).not.toBeChecked();
+  await page.getByLabel('Hydroponic system', { exact: true }).selectOption('dutch-bucket');
+  await page.reload();
+  await expect(page.getByRole('checkbox').first()).toBeChecked();
+  await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
+  await expect(page.getByLabel('Sistem hidroponik', { exact: true })).toHaveValue('dutch-bucket');
+  await page.getByRole('button', { name: 'Diagram', exact: true }).click();
+  await expect(page.locator('.static-diagram')).toContainText('Pipa balik bersama');
+  await page.setViewportSize({ width: 390, height: 900 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: 'artifacts/dutch-bucket-mobile.png' });
+});

@@ -23,10 +23,10 @@ npm run preview -- --port 4178   # preview the production build
 ## What is included
 
 - Pak choi, water spinach (kangkung), vegetable amaranth (bayam), lettuce, chilli, and common chives (Allium schoenoprasum).
-- Thirty-five tutorials (six soil paths and 29 supported hydroponic crop/system combinations) with six steps each: preparation, sowing, transplanting, care, troubleshooting, and harvest.
+- Thirty-six tutorials (six soil paths and 30 supported hydroponic crop/system combinations) with six steps each: preparation, sowing, transplanting, care, troubleshooting, and harvest.
 - Method- and system-specific tool/material guides with required/optional labels, functions, measurement and calibration supplies, crop-sized pots/reservoir guidance, and chilli supports. Full lists appear in crop overviews; the lesson accordion opens by default in preparation.
 - English and Indonesian instructions, equipment lists, checklists, quizzes with explanations, model labels, and progress screens.
-- Search in both languages, difficulty filters, and growing-method selection, and a six-system hydroponic comparison.
+- Search in both languages, difficulty filters, and growing-method selection, and a seven-system hydroponic comparison.
 - Progress saved separately for each crop/method/hydroponic system in localStorage, with a confirmed reset action and a warning if storage is unavailable. Completing a step requires all three task checks and the correct quiz answer. Users may explore any step in any order.
 - Lazy-loaded Three.js / React Three Fiber / Drei scenes with crop-specific foliage, stage presets, NFT and DFT channels, Wick media pots and capillary wicks, Kratky air gaps, DWC aeration, drip emitters and drain lines, cutaway containers, exposed roots, seeds, net pots, nutrient solution, selectable labels, and camera controls.
 - Static cross-section diagrams and equivalent text when WebGL is unavailable or when the user selects Diagram. Context loss and model-rendering errors fall back to the diagram.
@@ -52,7 +52,7 @@ Saved data uses `grow-together:v1`. Reading validates known tutorials, checklist
 
 Crop guidance references University of Minnesota, University of Maryland, World Vegetable Center, Oklahoma State University, University of Missouri, Indonesian Ministry of Agriculture, and University of Hawaiʻi extension material. Source links appear in each overview and lesson. Climate adaptations and reservoir/container sizes are editorial home-growing starting points, not universal requirements. Published regional planting calendars are not copied into Indonesian guidance. Seed packet instructions, cultivar behavior, local conditions, and nutrient product labels take priority.
 
-Six systems are available: NFT, DFT, Wick, Kratky, DWC, and Drip. Pak choi, amaranth, and lettuce have all six paths. Water spinach has NFT, DFT, DWC, and Drip; chilli has DWC and Drip; chives has all except Kratky. These are the supported beginner guides, not claims that other systems cannot grow these crops. The comparison explains the limitations of unavailable combinations.
+Seven systems are available: NFT, DFT, Wick, Kratky, DWC, Drip, and Dutch Bucket. Pak choi, amaranth, and lettuce have the original six paths. Water spinach has NFT, DFT, DWC, and Drip; chilli has DWC, Drip, and Dutch Bucket; chives has the original systems except Kratky. These are the supported beginner guides, not claims that other systems cannot grow these crops. The comparison explains the limitations of unavailable combinations.
 
 New crop overviews select Wick by default for pak choi, amaranth, lettuce, and chives. Water spinach and chilli start with DWC because their beginner guides do not support Wick. Explicit system selections take priority.
 
@@ -88,3 +88,37 @@ Equipment is authored in `src/data/equipment.ts` and shared by overview/lesson U
 ## Plant age: HSS and HST
 
 Every first-harvest estimate is explicitly tagged Days After Sowing (DAS) / Hari Setelah Semai (HSS), including crop cards and overviews. `Crop.harvestBasis` is `sowing` and is validated. The overview and lesson age guide explain HST as days after moving seedlings to the final growing position (DAT in English), with day 0 on the event date. At 14 HSS, transplanting starts 0 HST; seven days later is 21 HSS / 7 HST. This is a counting example, not a crop-specific transplant schedule. With direct sowing, the starting dates coincide. Seed packet conventions take priority; transplant readiness follows true leaves and roots, and divided chives are not covered by seed-based harvest estimates.
+
+## Photosynthesis lesson and Remotion motion graphics
+
+`/photosynthesis` explains the shared leaf process and compares soil with hydroponic root environments in English and Indonesian. Links are available from How it works, crop overviews, and the footer. The 24-second Remotion Player starts paused, with translated playback controls, a seek bar, four selectable chapters, and a written explanation for each step. It uses SVG and works without WebGL or external media assets.
+
+- `npm run motion:studio` opens the editable compositions.
+- `npm run motion:render` exports the English soil version to `artifacts/photosynthesis-soil-en.mp4`.
+- To export another version: `npx remotion render src/remotion/index.tsx Photosynthesis-hydro-id artifacts/photosynthesis-hydro-id.mp4`.
+
+Composition IDs: `Photosynthesis-soil-en`, `Photosynthesis-hydro-en`, `Photosynthesis-soil-id`, and `Photosynthesis-hydro-id`. Each is 1000 × 760 at 30 fps, lasting 720 frames. The illustrations are conceptual; particle speeds do not represent biological rates. Sources are linked in the lesson. Generated exports remain in the ignored `artifacts/` folder.
+
+The photosynthesis explanation is summarized from Jejakin’s [Fotosintesis: Proses Tumbuhan Menghasilkan Oksigen](https://www.jejakin.com/id/blog/the-process-of-photosynthesis), with attribution beside the introduction and in the source list. The two-stage explanation includes an OpenStax clarification of the Calvin cycle; practical soil/hydroponic guidance retains its university references.
+
+### Hour-by-hour day cycle
+
+The photosynthesis page also has 24 selectable hourly scenes, a keyboard-accessible hour slider, individual-hour playback, and full-day playback. The day-cycle composition runs 96 seconds (4 seconds per hour) at 30 fps and 1000 × 660. It starts paused, follows the selected growing method/language, and shows respiration through both day and night.
+
+This is an educational natural-light scenario (06:00–18:00, no grow lights, non-CAM garden plant), not a biological timetable or measured photosynthesis curve. Real daylight, species, stress, and artificial lighting alter the response. Each hourly note describes a learning focus rather than an exclusive event at that time. Process references are linked beside the simulation.
+
+Export IDs: `PhotosynthesisDay-soil-en`, `PhotosynthesisDay-hydro-en`, `PhotosynthesisDay-soil-id`, `PhotosynthesisDay-hydro-id`. Example: `npx remotion render src/remotion/index.tsx PhotosynthesisDay-soil-id artifacts/photosynthesis-day-soil-id.mp4`.
+
+## Editorial design and motion
+
+The shared design system in `src/redesign.css` updates home, library, learning overview, crop overviews, lessons, progress, error states, the plant drawer, and both photosynthesis animations. It uses Outfit body typography, editorial serif headings, cream/forest-green colors, wide page headings, and larger reading text. The home page includes a crop-name marquee, three learning cards in one responsive row, a manually controlled growing-notes carousel, and inline botanical art. Notes are editorial guidance, not customer testimonials.
+
+`SiteMotion.tsx` lazily loads GSAP, `@gsap/react`, and ScrollTrigger. Learning cards use a three-column desktop row and a swipeable row on smaller screens. The home photograph plus decorative plant illustrations scale and fade. Route and language changes clean up triggers. Scroll effects use static layouts on mobile and with reduced motion. The crop-name ribbon autoplays without controls, using a gentler 48-second loop with reduced motion (24 seconds otherwise); Remotion playback remains an explicit user action. The four-item mobile feature row and context-preserving plant drawer remain available.
+
+The existing Unsplash hero photograph is saved as `public/garden-tools.jpg` for reliable local loading. A faint decorative Picsum texture supplements the shared garden invitation; no botanical identification relies on that image. Responsive heading and overflow checks cover both languages from 320px to 1440px.
+
+
+Dutch Bucket is the seventh comparison system (`dutch-bucket`). Its beginner lesson path is offered for chilli, with independent saved progress, bucket-specific setup/care/quiz content, equipment, a 3D cutaway, and a 2D fallback. It is a drip-system variant with media-filled buckets and screened outlets connected to a common gravity return; the guide illustrates recirculation. Irrigation follows medium moisture and kit guidance rather than a universal timer. References: Oregon State University’s [Hydro hints: Buckets](https://extension.oregonstate.edu/catalog/pub/em-9456-hydro-hints-buckets) and [UC Master Gardeners](https://ucanr.edu/site/uc-master-gardeners-orange-county/hydroponics-home-gardener).
+
+
+The default language for new visitors is Indonesian. Explicit language choices and lesson progress persist on the device. Both photosynthesis players support native fullscreen with an in-page fallback; playback/timeline controls and soil/hydroponic comparison remain available there, with an additional hour selector for the 24-hour player.

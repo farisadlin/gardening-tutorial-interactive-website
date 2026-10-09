@@ -75,7 +75,7 @@ function SoilSetup(props: ModelProps) {
   </group>;
 }
 export default function GardenModel(props: ModelProps) {
-  const wide = ['nft', 'dft', 'drip'].includes(props.systemId || '');
+  const wide = ['nft', 'dft', 'drip', 'dutch-bucket'].includes(props.systemId || '');
   return <Canvas shadows dpr={[1, 1.5]} frameloop="demand" camera={{ position: [3, 2.4, 4], fov: 32 }} onCreated={({ gl }) => { gl.domElement.addEventListener('webglcontextlost', props.onFailure, { once: true }); }} role="group" aria-label={b('Interactive gardening model', 'Model berkebun interaktif')[props.language]}>
     <color attach="background" args={['#eef0e5']}/>
     <ambientLight intensity={1.4}/><directionalLight position={[3, 7, 4]} intensity={2.3} castShadow shadow-mapSize={[1024, 1024]}/>

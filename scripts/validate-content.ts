@@ -9,8 +9,8 @@ function bilingual(value: Localized, field: string) {
 }
 assert.equal(crops.length, 6);
 assert.equal(new Set(crops.map(c => c.id)).size, 6);
-assert.equal(hydroSystems.length, 6);
-assert.equal(new Set(hydroSystems.map(s => s.id)).size, 6);
+assert.equal(hydroSystems.length, 7);
+assert.equal(new Set(hydroSystems.map(s => s.id)).size, 7);
 assert.equal(new Set(tutorials.map(t => t.id)).size, tutorials.length);
 for (const system of hydroSystems) {
   for (const key of ['name', 'fullName', 'description', 'power', 'difficulty', 'advantage', 'caution', 'setup', 'transfer', 'care', 'problem', 'cleanup', 'rootLabel', 'rootExplanation', 'quizQuestion', 'quizCorrect', 'quizWrong'] as const) bilingual(system[key], `${system.id}.${key}`);

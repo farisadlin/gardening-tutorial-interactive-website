@@ -3,13 +3,13 @@ import { tutorials, type Language, type Stage } from './data/garden';
 export interface StepProgress { checks: number[]; answer?: number; complete: boolean }
 export interface SavedState { version: 1; language: Language; progress: Record<string, Partial<Record<Stage, StepProgress>>> }
 export const STORAGE_KEY = 'grow-together:v1';
-export const emptyState = (): SavedState => ({ version: 1, language: 'en', progress: {} });
+export const emptyState = (): SavedState => ({ version: 1, language: 'id', progress: {} });
 export function sanitizeState(raw: unknown): SavedState {
   const clean = emptyState();
   if (!raw || typeof raw !== 'object') return clean;
   const value = raw as Partial<SavedState>;
   if (value.version !== 1) return clean;
-  if (value.language === 'id') clean.language = 'id';
+  if (value.language === 'id' || value.language === 'en') clean.language = value.language;
   if (!value.progress || typeof value.progress !== 'object') return clean;
   for (const tutorial of tutorials) {
     const path = value.progress[tutorial.id];

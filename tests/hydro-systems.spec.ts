@@ -4,9 +4,10 @@ import { hydroSystems } from '../src/data/hydroSystems';
 
 test('system comparison, lesson selection and independent persisted progress', async ({ page }) => {
   await page.goto('/plants/pak-choi?method=hydro');
-  await expect(page.locator('.system-card')).toHaveCount(6);
+  await expect(page.locator('.system-card')).toHaveCount(7);
   await page.getByRole('button', { name: 'Choose NFT', exact: true }).click();
   await expect(page).toHaveURL(/system=nft/);
+  await expect(page.locator('.system-start').getByRole('link')).toHaveAttribute('href', '/learn/pak-choi/hydro/prepare?system=nft');
   await page.locator('.system-start').getByRole('link').click();
   await expect(page).toHaveURL(/hydro\/prepare\?system=nft/);
   await page.getByRole('checkbox').first().check();
@@ -26,10 +27,11 @@ test('system comparison, lesson selection and independent persisted progress', a
   await expect(page.getByRole('checkbox').first()).not.toBeChecked();
 });
 
-test('six different WebGL setups, diagrams, hotspots and controls', async ({ page }) => {
+test('seven different WebGL setups, diagrams, hotspots and controls', async ({ page }) => {
+  test.setTimeout(90000);
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   for (const system of hydroSystems) {
-    await page.goto(`/learn/pak-choi/hydro/care?system=${system.id}`);
+    await page.goto(`/learn/${system.id === 'dutch-bucket' ? 'chilli' : 'pak-choi'}/hydro/care?system=${system.id}`);
     await expect(page.locator('canvas')).toBeVisible();
     await expect(page.locator('.small-badge')).toContainText(system.name.en);
     await page.getByRole('button', { name: 'Reset camera', exact: true }).click();
