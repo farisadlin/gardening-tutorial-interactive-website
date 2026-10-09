@@ -9,7 +9,7 @@ test('dedicated pages, active navigation, language and browser history', async (
   await expect(page).toHaveURL(/\/plants$/);
   await expect(page.locator('.crop-card')).toHaveCount(6);
   await expect(page.locator('.hero')).toHaveCount(0);
-  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText('Explore plants');
+  await expect(page.locator('.site-header nav .explore-trigger')).toHaveClass(/active/);
   await page.getByRole('textbox', { name: 'Search plants' }).fill('chilli');
   await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
   await page.locator('.site-header').getByRole('link', { name: 'Cara belajar' }).click();
@@ -47,14 +47,50 @@ test('all navigation destinations remain available on narrow screens', async ({ 
     await page.goto('/');
     await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
     const nav = page.locator('.site-header nav');
-    await expect(nav.getByRole('link', { name: 'Jelajahi tanaman' })).toBeVisible();
+    await expect(nav.getByRole('button', { name: 'Jelajahi tanaman' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Kebun saya' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Cara belajar' })).toBeVisible();
     await nav.getByRole('link', { name: 'Cara belajar' }).click();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-    await nav.getByRole('link', { name: 'Jelajahi tanaman' }).click();
-    await expect(page.locator('.crop-card')).toHaveCount(6);
+    await nav.getByRole('button', { name: 'Jelajahi tanaman' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(page.locator('.drawer-plant')).toHaveCount(6);
+    await page.getByRole('button', { name: 'Tutup jelajah tanaman' }).click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
+});
+
+
+test('plant drawer preserves the guide, supports keyboard dismissal and opens a chosen method', async ({ page }) => {
+  await page.goto('/plants/pak-choi');
+  await page.getByRole('link', { name: 'Let’s start growing' }).click();
+  const guideUrl = page.url();
+  await expect(page.locator('.lesson-instructions')).toBeVisible();
+  await page.evaluate(() => window.scrollTo({ top: 200, behavior: 'instant' }));
+  const scrollBefore = await page.evaluate(() => window.scrollY);
+  const trigger = page.locator('.site-header').getByRole('button', { name: 'Explore plants' });
+  await trigger.evaluate(el => el.focus({ preventScroll: true }));
+  await page.keyboard.press('Enter');
+  const drawer = page.getByRole('dialog', { name: 'Explore plants' });
+  await expect(drawer).toBeVisible();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(drawer.getByRole('textbox', { name: 'Search plants' })).toBeFocused();
+  await expect(page).toHaveURL(guideUrl);
+  await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
+  await page.keyboard.press('Escape');
+  await expect(drawer).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore);
+  await trigger.click();
+  await drawer.getByRole('textbox').fill('nothing-matches');
+  await expect(drawer.getByRole('heading', { name: 'No plants found just yet.' })).toBeVisible();
+  await drawer.getByRole('button', { name: 'Show all plants' }).click();
+  await drawer.getByRole('textbox').fill('selada');
+  await expect(drawer.locator('.drawer-plant')).toHaveCount(1);
+  await drawer.getByRole('button', { name: 'Hydroponics', exact: true }).click();
+  await drawer.locator('.drawer-plant').click();
+  await expect(page).toHaveURL(/\/plants\/lettuce\?method=hydro$/);
+  await expect(drawer).not.toBeVisible();
+  await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
 });

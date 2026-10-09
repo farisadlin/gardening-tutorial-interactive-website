@@ -16,7 +16,7 @@ export const hydroSystems: HydroSystem[] = [
     power: b('Water pump · continuous flow', 'Pompa air · aliran kontinu'), difficulty: b('More setup', 'Perakitan lebih teliti'),
     advantage: b('Compact channels suit short leafy crops; most of the root zone stays exposed to air.', 'Talang ringkas cocok untuk sayuran daun berumur pendek; sebagian besar zona akar tetap mendapat udara.'),
     caution: b('A pump outage or blocked inlet can dry roots quickly. Monitor flow and plan a response to power loss.', 'Pompa mati atau saluran masuk tersumbat bisa membuat akar cepat kering. Pantau aliran dan siapkan penanganan listrik padam.'),
-    equipment: [b('Opaque reservoir, food-safe channel, net pots and secure frame', 'Tandon gelap, talang aman pangan, net pot dan rangka kokoh'), b('Continuous-duty water pump, feed hose and unobstructed return', 'Pompa air untuk operasi kontinu, selang suplai dan jalur balik bebas hambatan')],
+    equipment: [b('Opaque reservoir, food-safe PVC growing pipe, net pots and secure frame', 'Tandon gelap, pipa PVC aman pangan, net pot dan rangka kokoh'), b('Continuous-duty water pump, feed hose and unobstructed return', 'Pompa air untuk operasi kontinu, selang suplai dan jalur balik bebas hambatan')],
     setup: b('Secure the channel with a gentle slope, feed at the high end, and an open return to the reservoir. Use the kit’s slope and flow guidance. Test an even thin film with no deep pools before planting; check for leaks.', 'Pasang talang sedikit miring, suplai di ujung tinggi, dan jalur balik terbuka ke tandon. Ikuti kemiringan dan debit sesuai panduan kit. Uji lapisan air tipis merata tanpa genangan dalam sebelum menanam; periksa kebocoran.'),
     transfer: b('Place rooted plugs in channel net pots so root tips contact the flowing film, with the crown above water. Keep loose medium out of the channel and leave room for roots without blocking the return.', 'Letakkan media bibit berakar dalam net pot talang agar ujung akar menyentuh aliran tipis, dengan pangkal di atas air. Cegah media lepas masuk talang dan beri ruang akar tanpa menyumbat jalur balik.'),
     care: b('Run the water pump continuously. Check the inlet and return every day, plus reservoir level, temperature, pH and EC. Keep channels shaded from strong heat and prevent roots from damming the flow.', 'Nyalakan pompa air terus-menerus. Periksa saluran masuk dan balik tiap hari, serta tinggi larutan, suhu, pH dan EC. Lindungi talang dari panas kuat dan cegah akar membendung aliran.'),
@@ -31,7 +31,7 @@ export const hydroSystems: HydroSystem[] = [
     power: b('Water pump + aeration', 'Pompa air + aerasi'), difficulty: b('More setup', 'Perakitan lebih teliti'),
     advantage: b('Retained water buffers a brief interruption, while recirculation distributes nutrients.', 'Air yang tertahan memberi cadangan saat aliran terputus singkat, sementara sirkulasi meratakan nutrisi.'),
     caution: b('Retained water is not a substitute for oxygen. An outage, heat or blocked overflow can still harm roots.', 'Air yang tertahan bukan pengganti oksigen. Listrik padam, panas atau luapan tersumbat tetap dapat merusak akar.'),
-    equipment: [b('Opaque reservoir, food-safe deep channel, net pots and overflow-level fitting', 'Tandon gelap, talang dalam aman pangan, net pot dan pengatur tinggi luapan'), b('Water pump, feed and return hoses, air pump and air stone', 'Pompa air, selang suplai dan balik, pompa udara dan batu aerasi')],
+    equipment: [b('Opaque reservoir, food-safe PVC growing pipe, net pots and overflow-level fitting', 'Tandon gelap, pipa PVC aman pangan, net pot dan pengatur tinggi luapan'), b('Water pump, feed and return hoses, air pump and air stone', 'Pompa air, selang suplai dan balik, pompa udara dan batu aerasi')],
     setup: b('Set up a recirculating deep channel with an overflow fitting that holds the kit’s working water depth below the crown. Keep the return unobstructed and add reservoir aeration. Test the level, circulation and overflow with clean water first.', 'Siapkan talang dalam bersirkulasi dengan pengatur luapan yang menjaga kedalaman kerja sesuai kit di bawah pangkal. Jaga jalur balik lancar dan tambah aerasi tandon. Uji tinggi air, sirkulasi dan luapan dengan air bersih dahulu.'),
     transfer: b('Support the plug in a net pot above the retained solution, with lower roots reaching it. Keep the crown dry and leave space for the growing root mat so the overflow stays clear.', 'Topang media bibit dalam net pot di atas larutan tertahan, dengan akar bawah menjangkaunya. Jaga pangkal kering dan sisakan ruang akar agar luapan tetap lancar.'),
     care: b('Check both circulation and aeration daily. Measure water depth, reservoir level, temperature, pH and EC. Clear root mats around the outlet and keep solution protected from sun and rain.', 'Periksa sirkulasi dan aerasi setiap hari. Ukur kedalaman air, tinggi tandon, suhu, pH dan EC. Bersihkan akar di sekitar keluaran dan lindungi larutan dari matahari serta hujan.'),
@@ -74,7 +74,7 @@ export const hydroSystems: HydroSystem[] = [
     source: { title: 'University of Hawaiʻi · Suspended net-pot hydroponics', url: 'https://www.ctahr.hawaii.edu/oc/freepubs/pdf/VC-1.pdf' },
   },
   {
-    id: 'dwc', name: b('DWC', 'DWC'), fullName: b('Deep Water Culture', 'Deep Water Culture'),
+    id: 'dwc', name: b('DWC', 'DWC / Apung'), fullName: b('Deep Water Culture / Floating system', 'Deep Water Culture / Sistem apung'),
     description: b('Roots hang in an aerated reservoir; an air stone supplies oxygen to the nutrient solution.', 'Akar menggantung dalam tandon beraerasi; batu aerasi memasok oksigen ke larutan nutrisi.'),
     power: b('Air pump · continuous aeration', 'Pompa udara · aerasi kontinu'), difficulty: b('Regular checks', 'Pemeriksaan rutin'),
     advantage: b('A simple active reservoir setup that can support leafy and longer-growing crops with the right space and support.', 'Sistem tandon aktif sederhana untuk tanaman daun dan tanaman berumur panjang dengan ruang serta penopang sesuai.'),
@@ -104,12 +104,15 @@ export const hydroSystems: HydroSystem[] = [
     quizQuestion: b('What should you check if one drip-fed pot is dry?', 'Apa yang diperiksa jika satu pot tetes kering?'), quizCorrect: b('That pot’s emitter, filter and medium moisture', 'Emitter pot, filter dan kelembapan medianya'), quizWrong: b('Double the fertilizer for every plant', 'Gandakan pupuk untuk semua tanaman'), source: osu,
   },
 ];
+// Keep legacy lesson URLs and saved progress tied to their original systems.
 export function defaultSystem(crop: Crop): HydroSystemId { return crop.system === 'passive' ? 'kratky' : 'dwc'; }
+// New visits start with Wick wherever this guide supports it.
+export function initialSystem(crop: Crop): HydroSystemId { return ['water-spinach', 'chilli'].includes(crop.id) ? defaultSystem(crop) : 'wick'; }
 export function systemSupport(crop: Crop, system: HydroSystemId): { available: boolean; note: Localized } {
   if (crop.id === 'chilli' && !['dwc', 'drip'].includes(system)) return { available: false, note: b('For this beginner chilli guide, choose DWC or drip for a larger root zone and plant support.', 'Untuk panduan cabai pemula ini, pilih DWC atau drip agar zona akar dan penopang lebih memadai.') };
   if (crop.id === 'water-spinach' && ['wick', 'kratky'].includes(system)) return { available: false, note: b('This beginner guide favors active systems for vigorous, thirsty water spinach and repeat harvests.', 'Panduan pemula ini mengutamakan sistem aktif untuk kangkung yang banyak minum, tumbuh cepat dan dipanen ulang.') };
   if (crop.id === 'chives' && system === 'kratky') return { available: false, note: b('For repeated chive cuts, this guide uses systems that are easier to maintain over a longer cycle.', 'Untuk potongan kucai berulang, panduan ini memakai sistem yang lebih mudah dirawat selama siklus panjang.') };
-  return { available: true, note: system === defaultSystem(crop) ? b('Recommended starting point for this crop.', 'Pilihan awal yang disarankan untuk tanaman ini.') : b('A supported alternative; follow its system-specific checks.', 'Alternatif yang tersedia; ikuti pemeriksaan khusus sistemnya.') };
+  return { available: true, note: system === initialSystem(crop) ? b('Recommended starting point for this crop.', 'Pilihan awal yang disarankan untuk tanaman ini.') : b('A supported alternative; follow its system-specific checks.', 'Alternatif yang tersedia; ikuti pemeriksaan khusus sistemnya.') };
 }
 export function resolveSystem(crop: Crop, value: string | null | undefined): HydroSystem | undefined {
   const system = hydroSystems.find(s => s.id === (value || defaultSystem(crop)));

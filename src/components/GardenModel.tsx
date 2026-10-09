@@ -8,14 +8,14 @@ import type { HydroSystemId } from '../data/hydroSystems';
 import { scenePresets } from './sceneConfig';
 import { b, type Crop, type Language, type Method, type Stage } from '../data/garden';
 export type ModelAction = 'reset' | 'left' | 'right' | 'in' | 'out';
-export interface ModelProps { crop: Crop; systemId?: HydroSystemId; method: Method; stage: Stage; language: Language; cutaway: boolean; onHotspot: (key: string) => void; command: { action: ModelAction; serial: number }; onFailure: () => void; portal: RefObject<HTMLDivElement | null> }
-function CameraControls({ command, wide }: Pick<ModelProps, 'command'> & { wide: boolean }) {
+export interface ModelProps { preview?: boolean; crop: Crop; systemId?: HydroSystemId; method: Method; stage: Stage; language: Language; cutaway: boolean; onHotspot: (key: string) => void; command: { action: ModelAction; serial: number }; onFailure: () => void; portal: RefObject<HTMLDivElement | null> }
+function CameraControls({ command, wide, preview }: Pick<ModelProps, 'command' | 'preview'> & { wide: boolean }) {
   const ref = useRef<OrbitControlsType>(null);
   const { camera } = useThree();
   useEffect(() => {
     const controls = ref.current;
     if (!controls) return;
-    if (command.action === 'reset') { camera.position.set(wide ? 4 : 3, wide ? 3 : 2.4, wide ? 5.2 : 4); controls.target.set(0, wide ? 1 : .65, 0); }
+    if (command.action === 'reset') { camera.position.set(preview ? (wide ? 5 : 4) : wide ? 4 : 3, preview ? 3.4 : wide ? 3 : 2.4, preview ? (wide ? 6.5 : 5.5) : wide ? 5.2 : 4); controls.target.set(0, preview ? 1.25 : wide ? 1 : .65, 0); }
     else {
       const offset = camera.position.clone().sub(controls.target);
       if (command.action === 'left' || command.action === 'right') offset.applyAxisAngle(new Vector3(0, 1, 0), command.action === 'left' ? -.35 : .35);
@@ -23,8 +23,8 @@ function CameraControls({ command, wide }: Pick<ModelProps, 'command'> & { wide:
       camera.position.copy(controls.target).add(offset);
     }
     controls.update();
-  }, [camera, command, wide]);
-  return <OrbitControls ref={ref} target={[0, wide ? 1 : .65, 0]} minDistance={3} maxDistance={10} maxPolarAngle={Math.PI / 2.05} enablePan={false} makeDefault/>;
+  }, [camera, command, wide, preview]);
+  return <OrbitControls ref={ref} target={[0, preview ? 1.25 : wide ? 1 : .65, 0]} minDistance={3} maxDistance={10} maxPolarAngle={Math.PI / 2.05} enablePan={false} makeDefault/>;
 }
 function Plant({ crop, growth, warning }: { crop: Crop; growth: number; warning: boolean }) {
   if (!growth) return null;
@@ -79,6 +79,6 @@ export default function GardenModel(props: ModelProps) {
   return <Canvas shadows dpr={[1, 1.5]} frameloop="demand" camera={{ position: [3, 2.4, 4], fov: 32 }} onCreated={({ gl }) => { gl.domElement.addEventListener('webglcontextlost', props.onFailure, { once: true }); }} role="group" aria-label={b('Interactive gardening model', 'Model berkebun interaktif')[props.language]}>
     <color attach="background" args={['#eef0e5']}/>
     <ambientLight intensity={1.4}/><directionalLight position={[3, 7, 4]} intensity={2.3} castShadow shadow-mapSize={[1024, 1024]}/>
-    {props.method === 'soil' ? <SoilSetup {...props}/> : <HydroHardware {...props} plant={<Plant crop={props.crop} growth={scenePresets[props.stage].growth} warning={props.stage === 'troubleshoot'}/>}/>}<CameraControls command={props.command} wide={wide}/>
+    {props.method === 'soil' ? <SoilSetup {...props}/> : <HydroHardware {...props} plant={<Plant crop={props.crop} growth={scenePresets[props.stage].growth} warning={props.stage === 'troubleshoot'}/>}/>}<CameraControls command={props.command} wide={wide} preview={props.preview}/>
   </Canvas>;
 }

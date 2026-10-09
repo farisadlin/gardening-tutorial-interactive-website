@@ -54,7 +54,9 @@ Crop guidance references University of Minnesota, University of Maryland, World 
 
 Six systems are available: NFT, DFT, Wick, Kratky, DWC, and Drip. Pak choi, amaranth, and lettuce have all six paths. Water spinach has NFT, DFT, DWC, and Drip; chilli has DWC and Drip; chives has all except Kratky. These are the supported beginner guides, not claims that other systems cannot grow these crops. The comparison explains the limitations of unavailable combinations.
 
-The legacy default remains Kratky for pak choi, amaranth, and lettuce, and DWC for water spinach, chilli, and chives. Existing hydroponic URLs and saved tutorial IDs continue to work. Additional paths use system-specific IDs, so their checklists and quiz answers stay independent. No storage migration is required.
+New crop overviews select Wick by default for pak choi, amaranth, lettuce, and chives. Water spinach and chilli start with DWC because their beginner guides do not support Wick. Explicit system selections take priority.
+
+For compatibility, the legacy lesson default remains Kratky for pak choi, amaranth, and lettuce, and DWC for water spinach, chilli, and chives. Existing hydroponic URLs and saved tutorial IDs continue to work. Additional paths use system-specific IDs, so their checklists and quiz answers stay independent. No storage migration is required.
 
 DFT terminology varies between sources and installations. This guide uses a recirculating channel with retained deeper solution, an overflow-level fitting, and supplementary reservoir aeration. NFT uses a shallow flowing film. The setup diagrams are conceptual; they are not installation drawings or universal flow rates. Wick lessons require tested capillary uptake and airy medium; drip lessons require checking emitter flow and drainage. Passive Kratky lessons explain preserving established air roots during top-ups. All hydroponic lessons require complete nutrients and pH/EC measurements; they do not prescribe an unverified fertilizer recipe. Lettuce, pak choi, and common chives include explicit tropical-heat considerations.
 

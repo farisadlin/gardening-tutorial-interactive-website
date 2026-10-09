@@ -76,3 +76,22 @@ test('bilingual system pages are accessible and fit narrow screens', async ({ pa
   await page.goto('/plants/pak-choi?method=hydro#hydro-systems');
   await page.screenshot({ path: 'artifacts/hydro-systems.png', fullPage: true });
 });
+
+
+test('new overviews start with Wick while explicit and legacy system links stay intact', async ({ page }) => {
+  for (const crop of ['pak-choi', 'amaranth', 'lettuce', 'chives']) {
+    await page.goto(`/plants/${crop}?method=hydro`);
+    await expect(page.getByRole('button', { name: 'Choose Wick', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('.system-start a')).toHaveAttribute('href', new RegExp('system=wick'));
+  }
+  await page.locator('.system-start a').click();
+  await expect(page.getByLabel('Hydroponic system', { exact: true })).toHaveValue('wick');
+  await page.goto('/plants/pak-choi?method=hydro&system=nft');
+  await expect(page.getByRole('button', { name: 'Choose NFT', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.goto('/learn/pak-choi/hydro/care');
+  await expect(page.getByLabel('Hydroponic system', { exact: true })).toHaveValue('kratky');
+  for (const crop of ['water-spinach', 'chilli']) {
+    await page.goto(`/plants/${crop}?method=hydro`);
+    await expect(page.getByRole('button', { name: 'Choose DWC', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  }
+});

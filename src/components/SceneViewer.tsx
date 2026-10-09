@@ -31,12 +31,12 @@ export function Diagram({ crop, method, stage, language, systemId }: { systemId?
     <g fill="#344f3c" fontSize="12" fontFamily="sans-serif"><text x="18" y="212">{t(soil ? 'Potting mix' : 'Air zone', soil ? 'Media pot' : 'Zona udara')}</text><path d="M92 209H151" stroke="#788773"/><text x="297" y="242">{t(soil ? 'Drainage' : 'Nutrients', soil ? 'Drainase' : 'Nutrisi')}</text><path d="M259 241H290" stroke="#788773"/>{growth > 0 && <><text x="298" y="94">{t('Growing point', 'Titik tumbuh')}</text><path d="M216 115L290 91" stroke="#788773"/></>}{!soil && crop.system === 'aerated' && <><circle cx="241" cy="247" r="8" fill="#648791"/><circle cx="240" cy="227" r="3" fill="#eff8f4"/><circle cx="245" cy="215" r="3" fill="#eff8f4"/><text x="18" y="258">{t('Air stone', 'Batu aerasi')}</text><path d="M86 254H228" stroke="#788773"/></>}</g>
   </svg>;
 }
-export default function SceneViewer({ crop, method, stage, language, systemId }: { systemId?: HydroSystemId; crop: Crop; method: Method; stage: Stage; language: Language }) {
+export default function SceneViewer({ crop, method, stage, language, systemId, preview = false }: { preview?: boolean; systemId?: HydroSystemId; crop: Crop; method: Method; stage: Stage; language: Language }) {
   const t = (en: string, id: string) => language === 'en' ? en : id;
   const portal = useRef<HTMLDivElement>(null);
   const [supported] = useState(webglAvailable);
   const [diagram, setDiagram] = useState(!supported);
-  const [cutaway, setCutaway] = useState(true);
+  const [cutaway, setCutaway] = useState(!preview);
   const [hotspot, setHotspot] = useState('');
   const [command, setCommand] = useState<{ action: ModelAction; serial: number }>({ action: 'reset', serial: 0 });
   const execute = (action: ModelAction) => setCommand(c => ({ action, serial: c.serial + 1 }));
@@ -47,19 +47,19 @@ export default function SceneViewer({ crop, method, stage, language, systemId }:
     roots: soil ? b('Roots need moisture and oxygen. A loose potting mix supports both; saturated soil can suffocate fine roots.', 'Akar perlu kelembapan dan oksigen. Media gembur mendukung keduanya; tanah tergenang dapat membuat akar kekurangan oksigen.') : resolveSystem(crop, systemId)!.rootExplanation,
     leaves: b('Keep the growing point above the medium and solution. Protect young plants from harsh sun and look for true leaves before transplanting.', 'Jaga titik tumbuh di atas media dan larutan. Lindungi bibit dari terik dan amati daun sejati sebelum memindahkan.'),
   };
-  const fallback = <div className="diagram-fallback"><Diagram systemId={systemId} crop={crop} method={method} stage={stage} language={language}/><p>{t('Diagram view · all lesson instructions remain available', 'Tampilan diagram · semua petunjuk tetap tersedia')}</p></div>;
-  return <section className="scene-panel" aria-label={t('Visual growing guide', 'Panduan visual tanam')}>
-    <div className="scene-heading"><span><Box size={17}/>{t('See how it grows', 'Lihat cara tumbuhnya')}</span><span className="small-badge">{method === 'hydro' ? `${resolveSystem(crop, systemId)!.name[language]} · ` : ''}{diagram ? t('DIAGRAM', 'DIAGRAM') : '3D'}</span></div>
+  const fallback = <div className="diagram-fallback"><Diagram systemId={systemId} crop={crop} method={method} stage={stage} language={language}/><p>{preview ? t('Plant diagram · 3D preview unavailable or turned off', 'Diagram tanaman · pratinjau 3D tidak tersedia atau dinonaktifkan') : t('Diagram view · all lesson instructions remain available', 'Tampilan diagram · semua petunjuk tetap tersedia')}</p></div>;
+  return <section className={`scene-panel ${preview ? 'plant-preview' : ''}`} aria-label={preview ? t('Interactive plant preview', 'Pratinjau tanaman interaktif') : t('Visual growing guide', 'Panduan visual tanam')}>
+    <div className="scene-heading"><span><Box size={17}/>{preview ? t('Explore your plant', 'Jelajahi tanaman Anda') : t('See how it grows', 'Lihat cara tumbuhnya')}</span><span className="small-badge">{method === 'hydro' ? `${resolveSystem(crop, systemId)!.name[language]} · ` : ''}{diagram ? t('DIAGRAM', 'DIAGRAM') : '3D'}</span></div>
     <div className="model-frame">
-      {diagram ? fallback : <ModelBoundary fallback={fallback}><Suspense fallback={<div className="model-loading"><SproutLoader/>{t('Preparing your growing space…', 'Menyiapkan ruang tumbuh…')}</div>}><GardenModel systemId={method === 'hydro' ? systemId || defaultSystem(crop) : undefined} portal={portal} crop={crop} method={method} stage={stage} language={language} cutaway={cutaway} command={command} onHotspot={setHotspot} onFailure={() => setDiagram(true)}/></Suspense></ModelBoundary>}
+      {diagram ? fallback : <ModelBoundary fallback={fallback}><Suspense fallback={<div className="model-loading"><SproutLoader/>{t('Preparing your growing space…', 'Menyiapkan ruang tumbuh…')}</div>}><GardenModel preview={preview} systemId={method === 'hydro' ? systemId || defaultSystem(crop) : undefined} portal={portal} crop={crop} method={method} stage={stage} language={language} cutaway={cutaway} command={command} onHotspot={setHotspot} onFailure={() => setDiagram(true)}/></Suspense></ModelBoundary>}
       <div className="model-annotations" ref={portal}/>
     </div>
-    <div className="scene-caption"><span className="dot"/>{scenePresets[stage].caption[language]}</div>
+    {!preview && <div className="scene-caption"><span className="dot"/>{scenePresets[stage].caption[language]}</div>}
     <div className="scene-toolbar">
       {!diagram && <><button className={`tool-button ${cutaway ? 'selected' : ''}`} onClick={() => setCutaway(!cutaway)} aria-pressed={cutaway}><ScanLine size={16}/>{t('Cutaway', 'Penampang')}</button><div className="camera-buttons"><button title={t('Rotate left', 'Putar kiri')} aria-label={t('Rotate left', 'Putar kiri')} onClick={() => execute('left')}><ArrowLeft size={16}/></button><button title={t('Rotate right', 'Putar kanan')} aria-label={t('Rotate right', 'Putar kanan')} onClick={() => execute('right')}><ArrowRight size={16}/></button><button aria-label={t('Zoom in', 'Perbesar')} onClick={() => execute('in')}><Plus size={16}/></button><button aria-label={t('Zoom out', 'Perkecil')} onClick={() => execute('out')}><Minus size={16}/></button><button aria-label={t('Reset camera', 'Atur ulang kamera')} onClick={() => execute('reset')}><RotateCcw size={16}/></button></div></>}
       <button className="tool-button view-switch" onClick={() => { setDiagram(!diagram); setHotspot(''); }} disabled={!supported}><Eye size={16}/>{diagram ? t('View in 3D', 'Lihat dalam 3D') : t('Diagram', 'Diagram')}</button>
     </div>
-    <div className="part-buttons" aria-label={t('Explore model parts', 'Jelajahi bagian model')}>{Object.keys(info).filter(key => stage === 'sow' ? key !== 'leaves' : key !== 'seed').map(key => <button key={key} onClick={() => setHotspot(hotspot === key ? '' : key)} aria-pressed={hotspot === key}>{key === 'seed' ? t('Seed plug', 'Media semai') : key === 'container' ? t(soil ? 'Drainage' : 'Reservoir', soil ? 'Drainase' : 'Tandon') : key === 'roots' ? t('Root zone', 'Zona akar') : t('Growing point', 'Titik tumbuh')}<Plus size={12}/></button>)}</div>
+    {!preview && <div className="part-buttons" aria-label={t('Explore model parts', 'Jelajahi bagian model')}>{Object.keys(info).filter(key => stage === 'sow' ? key !== 'leaves' : key !== 'seed').map(key => <button key={key} onClick={() => setHotspot(hotspot === key ? '' : key)} aria-pressed={hotspot === key}>{key === 'seed' ? t('Seed plug', 'Media semai') : key === 'container' ? t(soil ? 'Drainage' : 'Reservoir', soil ? 'Drainase' : 'Tandon') : key === 'roots' ? t('Root zone', 'Zona akar') : t('Growing point', 'Titik tumbuh')}<Plus size={12}/></button>)}</div>}
     {hotspot && <p className="hotspot-explanation" role="status">{info[hotspot][language]}</p>}
     <p className="scene-help">{t('Drag to rotate · scroll or pinch to zoom. Models illustrate stages, not exact sizes or yields.', 'Geser untuk memutar · gulir atau cubit untuk zoom. Model menggambarkan fase, bukan ukuran atau hasil pasti.')}</p>
   </section>;

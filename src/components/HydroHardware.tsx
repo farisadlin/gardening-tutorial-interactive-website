@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from 'react';
 import { Html } from '@react-three/drei';
-import { CatmullRomCurve3, Vector3 } from 'three';
+import { BufferGeometry, Float32BufferAttribute, Shape, CatmullRomCurve3, Vector3 } from 'three';
 import type { RefObject } from 'react';
 import type { ModelProps } from './GardenModel';
 import { hydroSystems } from '../data/hydroSystems';
@@ -12,6 +12,41 @@ function Tube({ points, color = '#718568', radius = .025 }: { points: Point[]; c
   return <mesh><tubeGeometry args={[curve, 32, radius, 8, false]}/><meshStandardMaterial color={color} roughness={.7}/></mesh>;
 }
 function Box({ position, size, color, translucent = false }: { position: Point; size: Point; color: string; translucent?: boolean }) { return <mesh position={position} castShadow><boxGeometry args={size}/><meshStandardMaterial color={color} transparent={translucent} opacity={translucent ? .58 : 1} roughness={translucent ? .3 : .8}/></mesh>; }
+// Round PVC wall with planting holes; the front half opens for the cutaway.
+function PvcPipe({ cutaway, deep }: { cutaway: boolean; deep: boolean }) {
+  const shell = useMemo(() => {
+    const vertices: number[] = [];
+    const point = (x: number, angle: number, radius: number) => [x, 1.08 + Math.cos(angle) * radius, Math.sin(angle) * radius];
+    for (const radius of [.35, .325]) for (let i = 0; i < 180; i++) for (let j = 0; j < 96; j++) {
+      const x = -1.8 + i * .02, a = j * Math.PI * 2 / 96;
+      const mid = point(x + .01, a + Math.PI / 96, radius);
+      if (cutaway && mid[2] > 0) continue;
+      if (mid[1] > 1.08 && [-1.3, 0, 1.3].some(h => Math.hypot(mid[0] - h, mid[2]) < .18)) continue;
+      const corners = [point(x, a, radius), point(x + .02, a, radius), point(x + .02, a + Math.PI * 2 / 96, radius), point(x, a + Math.PI * 2 / 96, radius)];
+      for (const k of [0, 1, 2, 0, 2, 3]) vertices.push(...corners[k]);
+    }
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+    geometry.computeVertexNormals();
+    return geometry;
+  }, [cutaway]);
+  const liquid = useMemo(() => {
+    const shape = new Shape();
+    const radius = .32, level = deep ? -.02 : -.28;
+    const angle = Math.asin(level / radius);
+    const edge = Math.sqrt(radius * radius - level * level);
+    shape.moveTo(-edge, level);
+    shape.lineTo(edge, level);
+    shape.absarc(0, 0, radius, angle, -Math.PI - angle, true);
+    shape.closePath();
+    return shape;
+  }, [deep]);
+  return <group>
+    <mesh geometry={shell} castShadow><meshStandardMaterial color="#eeeede" roughness={.55} side={2}/></mesh>
+    {[-1.82, 1.82].map(x => <mesh key={x} position={[x, 1.08, 0]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[.36, .36, .065, 48, 1, false, cutaway ? Math.PI / 2 : 0, cutaway ? Math.PI : Math.PI * 2]}/><meshStandardMaterial color="#d8ddce" side={2}/></mesh>)}
+    <mesh position={[-1.78, 1.08, 0]} rotation={[0, Math.PI / 2, 0]}><extrudeGeometry args={[liquid, { depth: 3.56, bevelEnabled: false, curveSegments: 32 }]}/><meshStandardMaterial color="#91c6b7" transparent opacity={.65} roughness={.3}/></mesh>
+  </group>;
+}
 function NetPot({ position }: { position: Point }) { return <mesh position={position}><cylinderGeometry args={[.18, .12, .2, 14, 1, true]}/><meshStandardMaterial color="#455844" wireframe/></mesh>; }
 function Roots({ position, length, spread = .12 }: { position: Point; length: number; spread?: number }) { return <group position={position}>{Array.from({ length: 9 }, (_, i) => <Tube key={i} radius={.008} color="#e8d5a8" points={[[Math.sin(i * 2.4) * .06, 0, Math.cos(i * 2.4) * .06], [Math.sin(i) * spread, -length * .5, Math.cos(i) * spread], [Math.sin(i * 2) * spread, -length, Math.cos(i * 2) * spread]]}/>)}</group>; }
 function Bubbles({ position }: { position: Point }) { return <group position={position}><mesh><sphereGeometry args={[.07, 12, 8]}/><meshStandardMaterial color="#61808a"/></mesh>{Array.from({ length: 7 }, (_, i) => <mesh key={i} position={[Math.sin(i) * .055, .08 + i * .04, Math.cos(i) * .055]}><sphereGeometry args={[.014, 8, 8]}/><meshStandardMaterial color="#e0f4de"/></mesh>)}</group>; }
@@ -34,19 +69,14 @@ export default function HydroHardware({ plant, ...props }: ModelProps & { plant:
     {channel ? <>
       <Tank cutaway={cutaway} water={.4}/>
       <group rotation={[0, 0, id === 'nft' ? -.025 : 0]}>
-      <Box position={[0, .98, 0]} size={[3.65, .07, .68]} color="#788c72"/>
-      <Box position={[0, 1.16, -.35]} size={[3.65, .35, .045]} color="#718970"/>
-      {!cutaway && <Box position={[0, 1.16, .35]} size={[3.65, .35, .045]} color="#718970"/>}
-      <Box position={[-1.81, 1.16, 0]} size={[.045, .35, .7]} color="#718970"/><Box position={[1.81, 1.16, 0]} size={[.045, .35, .7]} color="#718970"/>
-      <Box position={[0, id === 'nft' ? 1.03 : 1.1, 0]} size={[3.57, id === 'nft' ? .025 : .17, .64]} color="#91c6b7" translucent/>
-      <Box position={[0, 1.35, -.19]} size={[3.65, .045, .32]} color="#d5ddbd"/>{!cutaway && <Box position={[0, 1.35, .18]} size={[3.65, .045, .35]} color="#d5ddbd"/>}
-      {[-1.3, 0, 1.3].map((x, i) => <group key={x}><NetPot position={[x, 1.29, 0]}/><group position={[x, .8, 0]} scale={[.65, .65, .65]}>{plant}</group>{growth > 0 && cutaway && <Roots position={[x, 1.25, .08]} length={id === 'nft' ? .19 : .27} spread={.13 + growth * .08}/>}{stage !== 'prepare' && <mesh position={[x, 1.32, 0]}><boxGeometry args={[.16, .16, .16]}/><meshStandardMaterial color="#9a8f68"/></mesh>}</group>)}
+      <PvcPipe cutaway={cutaway} deep={id === 'dft'}/>
+      {[-1.3, 0, 1.3].map((x, i) => <group key={x}><NetPot position={[x, 1.39, 0]}/><group position={[x, .8, 0]} scale={[.65, .65, .65]}>{plant}</group>{growth > 0 && cutaway && <Roots position={[x, 1.25, .08]} length={id === 'nft' ? .44 : .37} spread={.13 + growth * .08}/>}{stage !== 'prepare' && <mesh position={[x, 1.32, 0]}><boxGeometry args={[.16, .16, .16]}/><meshStandardMaterial color="#9a8f68"/></mesh>}</group>)}
       </group>
       {[-1.45, 1.45].map(x => <Box key={x} position={[x, .51, -.17]} size={[.06, .95, .06]} color="#9b9d80"/>)}
       <Tube points={[[-.28, .17, .17], [-1.85, .15, .18], [-1.94, 1.2, .08], [-1.64, 1.22, .06]]}/>
-      <Tube points={[[1.63, id === 'dft' ? 1.16 : 1.03, .12], [1.95, 1.06, .13], [1.91, .3, .15], [.5, .3, .2]]}/>
+      <Tube points={[[1.63, id === 'dft' ? 1.06 : .8, .12], [1.95, 1.06, .13], [1.91, .3, .15], [.5, .3, .2]]}/>
       <Box position={[-.28, .11, .18]} size={[.19, .15, .18]} color="#405e53"/>
-      {[-.65, .65].map(x => <mesh key={x} position={[x, id === 'dft' ? 1.21 : 1.08, .2]} rotation={[0, 0, -Math.PI / 2]}><coneGeometry args={[.035, .12, 8]}/><meshStandardMaterial color="#417b69"/></mesh>)}
+      {[-.65, .65].map(x => <mesh key={x} position={[x, id === 'dft' ? 1.09 : .83, .2]} rotation={[0, 0, -Math.PI / 2]}><coneGeometry args={[.035, .12, 8]}/><meshStandardMaterial color="#417b69"/></mesh>)}
       {id === 'dft' && <><Box position={[-1.28, .1, .56]} size={[.32, .15, .2]} color="#78856e"/><Tube points={[[-1.28, .12, .56], [-.55, .12, .4], [.25, .08, .19]]} color="#c2b99b" radius={.015}/><Bubbles position={[.25, .1, .2]}/></>}
     </> : medium ? <>
       {id === 'wick' ? <Tank cutaway={cutaway} water={.38}/> : <><Tank position={[1.3, 0, 0]} cutaway={cutaway} water={.38}/><Box position={[1.15, .12, .15]} size={[.18, .14, .15]} color="#405e53"/></>}

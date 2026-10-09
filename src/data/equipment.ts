@@ -9,7 +9,7 @@ const waterPump = item('water-pump', 'Water pump', 'Pompa air', 'Choose a pump r
 const tubing = item('feed-return', 'Feed hose, return pipe & fittings', 'Selang suplai, pipa balik & sambungan', 'Connect the nutrient circuit and test every joint for leaks.', 'Menghubungkan aliran nutrisi; uji kebocoran setiap sambungan.');
 const airPump = item('air-pump', 'Air pump', 'Pompa udara', 'Supplies air continuously; keep it dry and follow the installation manual.', 'Memasok udara terus-menerus; jaga kering dan ikuti manual pemasangan.');
 const airKit = item('air-kit', 'Air stone, air hose & backflow protection', 'Batu aerasi, selang udara & pencegah aliran balik', 'Disperses air in the solution. Fit a check valve or position the pump above water as its manual directs.', 'Menyebarkan udara dalam larutan. Pasang katup satu arah atau letakkan pompa di atas air sesuai manual.');
-const channel = item('channel', 'Food-safe growing channel & secure stand', 'Talang tanam aman pangan & penyangga kokoh', 'Supports plants and the nutrient flow without sagging.', 'Menopang tanaman dan aliran nutrisi tanpa melendut.');
+const channel = item('channel', 'Food-safe PVC growing pipe & secure stand', 'Pipa tanam PVC aman pangan & penyangga kokoh', 'Supports plants and the nutrient flow without sagging.', 'Menopang tanaman dan aliran nutrisi tanpa melendut.');
 const mediaPot = item('media-pot', 'Draining growing pot & airy medium', 'Pot tanam berdrainase & media berpori', 'Use prepared coco/perlite or the kit’s medium; keep the crown above wet media.', 'Gunakan coco/perlit siap pakai atau media sesuai kit; jaga pangkal tanaman di atas media basah.');
 export const systemEquipment: Record<HydroSystemId, EquipmentItem[]> = {
   nft: [tank, channel, pots, waterPump, tubing],

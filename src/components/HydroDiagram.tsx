@@ -12,16 +12,16 @@ export default function HydroDiagram({ crop, systemId, stage, language, thumbnai
   return <svg viewBox="0 0 440 320" className={thumbnail ? 'system-thumbnail' : 'static-diagram'} role={thumbnail ? undefined : 'img'} aria-hidden={thumbnail || undefined} aria-label={thumbnail ? undefined : t(`${system.name.en}: ${crop.name.en} at ${stage}`, `${system.name.id}: ${crop.name.id}, fase ${stage}`)}>
     <ellipse cx="220" cy="295" rx="150" ry="5" fill="#d9dfcb"/>
     {channel ? <>
-      <path d="M60 161H364V224H60Z" fill="#698370"/><path d="M68 170H356V217H68Z" fill="#e5ead9"/>
-      <path d={systemId === 'nft' ? 'M68 209H356V217H68Z' : 'M68 181H356V217H68Z'} fill="#9dcac0"/>
+      <rect x="60" y="161" width="304" height="63" rx="25" fill="#e7e9df" stroke="#b9c3b1" strokeWidth="3"/><rect x="68" y="170" width="288" height="47" rx="18" fill="#f5f5ec"/><ellipse cx="61" cy="192" rx="8" ry="30" fill="#d5dccc"/><ellipse cx="363" cy="192" rx="8" ry="30" fill="#d5dccc"/>
+      <path d={systemId === 'nft' ? 'M76 209H348Q342 217 331 217H93Q82 217 76 209Z' : 'M70 181H354V199Q351 217 331 217H93Q73 217 70 199Z'} fill="#9dcac0"/>
       <path d="M165 246H272V290H165Z" fill="#617f70"/><path d="M171 257H266V284H171Z" fill="#acd3c6"/>
-      <path d="M181 266H56V175H72M350 204H383V270H272" stroke="#829875" strokeWidth="6" fill="none"/>
+      <path d="M181 266H56V175H72M350 204H383V270H272" stroke="#cbd3c2" strokeWidth="6" fill="none"/>
       <rect x="175" y="262" width="16" height="14" rx="3" fill="#3c5f56"/>
       {[106, 213, 318].map(x => growth > 0 ? <g key={x}>{plant(x, 160, .65 + growth * .4)}</g> : <path key={x} d={`M${x - 12} 160h24l-4 18h-16z`} fill="#9a906c"/>)}
       <path d="M77 214L82 245M348 224L351 245" stroke="#8d9479" strokeWidth="5"/>
       <path d="m111 214 8-4-8-4m121 8 8-4-8-4" stroke="#4c9180" fill="none" strokeWidth="2"/>
       {systemId === 'dft' && <><path d="M323 211V182H357" fill="none" stroke="#557767" strokeWidth="4"/><circle cx="237" cy="278" r="5" fill="#668591"/><circle cx="240" cy="266" r="2" fill="#f4faf2"/></>}
-      {!thumbnail && <g fill="#344f3c" fontSize="11" fontFamily="sans-serif"><text x="90" y="67">{system.rootLabel[language]}</text><path d="M133 75V190" stroke="#829576" strokeDasharray="3 3"/><text x="285" y="282">{t('Reservoir + pump', 'Tandon + pompa')}</text><text x="278" y="242">{t('Return', 'Aliran balik')}</text></g>}
+      {!thumbnail && <g fill="#344f3c" fontSize="11" fontFamily="sans-serif"><text x="278" y="151">{t('PVC pipe', 'Pipa PVC')}</text><text x="90" y="67">{system.rootLabel[language]}</text><path d="M133 75V190" stroke="#829576" strokeDasharray="3 3"/><text x="285" y="282">{t('Reservoir + pump', 'Tandon + pompa')}</text><text x="278" y="242">{t('Return', 'Aliran balik')}</text></g>}
     </> : medium ? <>
       <path d="M135 161H269L258 240H146Z" fill="#c18b62"/><path d="M145 170H259L249 230H154Z" fill="#9d8b64"/>
       {growth > 0 && plant(202, 160, .75 + growth * .4)}
