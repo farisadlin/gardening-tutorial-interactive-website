@@ -127,3 +127,46 @@ button,input,select{font-family:'Outfit',sans-serif}a,button{touch-action:manipu
 .animation-focus.is-fullscreen .photo-methods button{flex:1;min-height:40px;padding:8px 12px;font-size:12px}
 .animation-focus.is-fullscreen .animation-focus-stage{width:min(100%,calc((100dvh - 290px) * var(--animation-ratio)))}
 @media(max-height:480px){.animation-focus.is-fullscreen .animation-focus-stage{width:min(100%,calc((100dvh - 210px) * var(--animation-ratio)))}.animation-focus.is-fullscreen .photo-methods button{min-height:36px;padding:6px 10px}}
+
+/* Plant-specific growth study, with deliberate playback and still-stage access. */
+.growth-simulation { margin: 3rem 0; min-width: 0; }
+.growth-heading { max-width: 640px; margin-bottom: 1.4rem; }
+.growth-heading h2 { font-size: clamp(1.7rem, 3vw, 2.6rem); margin: .55rem 0; }
+.growth-heading p, .growth-disclaimer { color: var(--muted, #5e6d58); line-height: 1.65; }
+.growth-simulation .animation-focus { border: 1px solid #d4dac7; border-radius: 12px; overflow: hidden; background: #f7f6ec; }
+.growth-simulation .animation-focus-stage { max-width: 900px; margin: auto; }
+.growth-playback { display: flex; align-items: center; gap: .8rem; padding: 1rem 1.25rem; flex-wrap: wrap; }
+.growth-playback button { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; padding: .55rem .8rem; border: 1px solid #bdc8ad; border-radius: 6px; background: #f7f6ec; color: #294c35; }
+.growth-playback button:disabled { opacity: .55; cursor: default; }
+.growth-playback input { flex: 1; min-width: 80px; accent-color: #476d3e; }
+.growth-playback > span { font-size: .8rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.growth-stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; border-block: 1px solid #d4dac7; background: #d4dac7; }
+.growth-stages button { display: flex; align-items: flex-start; flex-direction: column; gap: .5rem; min-height: 72px; padding: .8rem 1rem; color: #34513b; background: #f7f6ec; text-align: left; font-size: .9rem; }
+.growth-stages button span { font-size: .7rem; letter-spacing: .1em; opacity: 1; }
+.growth-stages button[aria-pressed="true"] { background: #314f39; color: #f7f6ec; }
+.growth-note { padding: 1.25rem; }
+.growth-note p { margin: .45rem 0 0; line-height: 1.7; }
+.growth-disclaimer { margin: 0; padding: 0 1.25rem 1.25rem; font-size: .8rem; }
+.compact-growth { margin: 1.5rem 0; }
+.compact-growth .growth-heading h2 { font-size: 1.5rem; }
+.compact-growth .growth-stages button { font-size: .75rem; padding: .6rem .4rem; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .growth-playback { gap: .55rem; padding: .8rem; }
+  .growth-playback input { flex-basis: 55%; order: 3; }
+  .growth-playback > span { order: 4; }
+  .growth-stages button { font-size: .7rem; padding: .65rem .4rem; overflow-wrap: anywhere; }
+  .growth-note { padding: 1rem; }
+}
+.growth-simulation .animation-focus.is-fullscreen { overflow: auto; background: #f7f6ec; color: #274c35; border-radius: 0; }
+.growth-simulation .is-fullscreen .animation-focus-toolbar { color: #274c35; }
+.growth-simulation .is-fullscreen .growth-playback,
+.growth-simulation .is-fullscreen .growth-stages,
+.growth-simulation .is-fullscreen .growth-note,
+.growth-simulation .is-fullscreen .growth-disclaimer { width: 100%; max-width: 900px; flex-shrink: 0; box-sizing: border-box; }
+.growth-simulation .is-fullscreen .animation-focus-stage { flex-shrink: 0; margin: 0; }
+.compact-growth .growth-stages { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.growth-stages button { white-space: normal; }
+@media (max-width: 600px) {
+  .growth-stages { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .growth-stages button, .compact-growth .growth-stages button { padding: .7rem .65rem; font-size: .8rem; }
+}
