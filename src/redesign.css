@@ -170,3 +170,71 @@ button,input,select{font-family:'Outfit',sans-serif}a,button{touch-action:manipu
   .growth-stages { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .growth-stages button, .compact-growth .growth-stages button { padding: .7rem .65rem; font-size: .8rem; }
 }
+
+/* Focus the learning path on one action, with reference material on demand. */
+.selected-path{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--green)}
+.selected-path span{flex:1}.selected-path strong,.selected-path small{display:block}
+.selected-path small,.path-reassurance{font-size:13px;line-height:1.6;color:var(--muted)}
+.selected-path a{text-decoration:underline;text-underline-offset:4px;font-size:14px}
+.path-reassurance{margin-top:12px;text-align:center}
+.learning-details{border-top:1px solid var(--line);padding:18px 0;margin-top:12px;min-width:0}
+.learning-details>summary{cursor:pointer;font-size:15px;font-weight:500;line-height:1.6;color:var(--green)}
+.learning-details>p{font-size:15px;line-height:1.7;margin-top:14px}
+.learning-details[open]>summary{margin-bottom:16px}
+.overview-reference{margin-top:44px}.overview-reference>h2{font-size:28px;margin-bottom:22px}
+.overview-reference .compact-equipment{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:18px 0;margin-top:12px}
+.overview-reference .compact-equipment .equipment-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+.overview-reference .compact-age{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:18px 0}
+.overview-reference .learning-details .growing-targets{margin-top:0}
+.system-overview{display:flex;align-items:center;justify-content:space-between;gap:28px}
+.system-overview h2{font-size:32px;margin:8px 0}.system-overview p{font-size:15px}
+.system-overview>svg{width:190px;height:140px;flex-shrink:0}
+.selected-system-caution{display:flex;align-items:flex-start;gap:10px;max-width:720px;font-size:14px;line-height:1.7;margin-top:12px}
+.selected-system-caution svg{flex-shrink:0;margin-top:3px}
+.lesson-page .lesson-system>details{margin-top:8px}
+.lesson-page .lesson-grid{margin-top:28px}
+.focused-tasks{margin:24px 0}.task-dots{display:flex;gap:10px;margin-bottom:20px}
+.task-dots button{width:42px;height:42px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:transparent;color:var(--green);cursor:pointer}
+.task-dots button[aria-pressed=true]{background:var(--green);color:var(--paper)}
+.focused-task{min-height:120px;padding:24px 0;border-top:1px solid var(--line)}
+.focused-task p{font-size:18px;line-height:1.75;max-width:48ch}
+.focused-task-actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.focused-task-actions .task-item{margin:0;padding:12px 0;border:0;background:transparent;min-height:44px}
+.task-success{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:18px;color:var(--green)}
+.task-caution{font-size:13px;line-height:1.7;border-left:2px solid var(--terracotta);padding-left:14px;margin:18px 0}
+.step-equipment{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.step-equipment h3{display:flex;align-items:center;gap:9px;font-size:16px}
+.step-equipment>ul{padding-left:20px;margin-top:14px;columns:2;column-gap:28px}
+.step-equipment>ul li{font-size:14px;line-height:1.6;margin-bottom:10px;break-inside:avoid}
+.lesson-visual .learning-details .growth-heading{display:none}
+.lesson-visual .compact-age{background:transparent;border:0;border-top:1px solid var(--line);padding:18px 0;margin-top:12px}
+@media(max-width:700px){
+  .overview-reference .compact-equipment .equipment-cards{grid-template-columns:1fr}
+  .system-overview{gap:12px}.system-overview>svg{width:125px;height:110px}
+  .focused-task{min-height:0;padding:20px 0}.focused-task p{font-size:17px}
+  .step-equipment>ul{columns:1}
+  .lesson-grid{display:flex!important;flex-direction:column}
+  .lesson-instructions{order:0}.lesson-visual{order:1}
+}
+@media(max-width:900px){.overview-copy{order:-1}.overview-grid{gap:28px}.overview-copy h1{margin-top:0}.overview-preview{max-height:380px}.overview-preview .preview-scene{max-height:300px}}
+.lesson-page{padding-top:20px}
+.lesson-breadcrumb{margin:16px 0}
+.lesson-title{margin:20px 0 18px}
+.lesson-title h1{font-size:38px;margin:8px 0 0}
+.lesson-page .lesson-system{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding:12px 0;margin-top:0;border:0;border-bottom:1px solid var(--line);background:transparent}
+.lesson-page .lesson-system>details{margin-top:0;font-size:13px;max-width:100%}
+.lesson-page .lesson-system>details[open]{flex-basis:100%}
+.lesson-page .step-nav{margin:16px 0;padding:14px 0}
+.lesson-page .lesson-grid{margin-top:18px;gap:36px}
+.lesson-instructions h2{margin-top:12px}
+@media(max-width:650px){
+ .lesson-title{display:flex;align-items:center;margin:16px 0}.lesson-title h1{font-size:32px}
+ .lesson-title .lesson-progress{margin:0;width:auto;min-width:100px}
+ .lesson-page .step-nav{gap:12px 6px}.lesson-page .lesson-grid{gap:24px}
+}
+.focused-tasks .checklist-heading h3{font-family:'Outfit',sans-serif;font-size:16px;font-weight:500;letter-spacing:0}
+.focused-tasks .checklist-heading{margin-bottom:14px}
+
+.hyperframes-day-stage{position:relative;aspect-ratio:1000/660;background:#e1e6ef;overflow:hidden}
+.hyperframes-day-host{position:absolute;inset:0}
+.hyperframes-day-error{position:absolute;inset:0;display:grid;place-items:center;padding:24px;background:var(--paper);font-size:15px;line-height:1.6;color:var(--green)}

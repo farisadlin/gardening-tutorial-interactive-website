@@ -6,18 +6,18 @@ test('harvest labels and age explanation distinguish sowing from transplanting',
   await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
   await expect(page.locator('.crop-category').first()).toContainText('30–50 HSS');
   await page.goto('/plants/pak-choi?method=hydro');
-  await expect(page.locator('.overview-facts')).toContainText('Hari Setelah Semai');
+  await expect(page.locator('.overview-facts')).toContainText('sejak semai');
   await expect(page.locator('.growing-age')).toContainText('HST · Hari Setelah Tanam');
   await expect(page.locator('.age-example')).toContainText('14 HSS = 0 HST');
   await expect(page.locator('.age-example')).toContainText('21 HSS = 7 HST');
   await expect(page.locator('.age-convention')).toContainText('hari 0');
   await page.goto('/learn/pak-choi/hydro/transplant?system=nft');
-  await expect(page.locator('.compact-age')).toHaveAttribute('open', '');
-  await expect(page.getByRole('checkbox')).toHaveCount(3);
-  await expect(page.locator('.grow-tip')).toContainText('0 HST');
+  await expect(page.locator('.compact-age')).not.toHaveAttribute('open');
+  await expect(page.locator('.focused-task-actions input')).toHaveCount(1);
+  await expect(page.locator('.lesson-instructions .learning-details')).toContainText('0 HST');
   await page.goto('/learn/pak-choi/hydro/harvest?system=nft');
-  await expect(page.locator('.grow-tip')).toContainText('30–50 HSS');
-  await expect(page.locator('.grow-tip')).toContainText('bukan HST');
+  await expect(page.locator('.lesson-instructions .learning-details')).toContainText('30–50 HSS');
+  await expect(page.locator('.lesson-instructions .learning-details')).toContainText('bukan HST');
 });
 test('age guide translates and remains accessible on small screens', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
@@ -31,6 +31,6 @@ test('age guide translates and remains accessible on small screens', async ({ pa
   }
   const summary = page.locator('.compact-age summary');
   await summary.focus(); await page.keyboard.press('Enter');
-  await expect(page.locator('.age-example')).not.toBeVisible();
-  await page.keyboard.press('Enter'); await expect(page.locator('.age-example')).toBeVisible();
+  await expect(page.locator('.age-example')).toBeVisible();
+  await page.keyboard.press('Enter'); await expect(page.locator('.age-example')).not.toBeVisible();
 });

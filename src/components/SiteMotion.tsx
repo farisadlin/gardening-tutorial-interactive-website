@@ -14,6 +14,10 @@ export default function SiteMotion() {
           .fromTo(image, {scale:0.8, opacity:1}, {scale:1, opacity:1, duration:0.6, ease:'none'})
           .to(image, {opacity:0.2, duration:0.4, ease:'none'});
       });
+      gsap.fromTo('.footer-wordmark', { y: 22 }, {
+        y: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.garden-footer', start: 'top 92%', once: true },
+      });
       let active = true;
       const refresh = () => { if (active) ScrollTrigger.refresh(); };
       document.fonts?.ready.then(refresh);

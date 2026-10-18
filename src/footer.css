@@ -1,0 +1,47 @@
+/* Cabinet Grotesk, Fontshare. The footer font is served locally. */
+@font-face{font-family:'Cabinet Grotesk';src:url('/fonts/cabinet-grotesk-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+.garden-footer{background:radial-gradient(ellipse at 50% 120%,#345d42 0,transparent 65%),#173b2d;color:#f4f1e8;border-top:1px solid #8aab7c33;overflow:hidden;padding:0}
+.garden-footer .footer-inner{width:min(1360px,calc(100% - 96px));margin-inline:auto;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:40px 0 24px}
+.garden-footer .footer-topline{display:flex;justify-content:space-between;align-items:center;gap:32px;width:100%}
+.garden-footer .footer-topline .footer-intro{display:flex;align-items:center;gap:14px;font-size:14px;line-height:1.6;max-width:260px;margin:0;color:#d3ddc9}
+.footer-intro svg{flex-shrink:0;color:#b9d09f}
+.footer-navigation{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense;gap:24px}
+.footer-navigation a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;position:relative;font-size:14px;color:#f4f1e8;text-decoration:none;white-space:nowrap}
+.footer-navigation a:after{content:'';position:absolute;bottom:4px;left:0;right:0;height:1px;background:#afc699;transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.footer-navigation a:hover:after,.footer-navigation a:focus-visible:after{transform:scaleX(1)}
+.footer-navigation a svg{color:#afc699;transition:transform .3s ease}
+.footer-navigation a:hover svg{transform:translate(2px,-2px)}
+.garden-footer .footer-wordmark{display:flex;align-items:center;justify-content:center;gap:.12em;color:#f1f0d9;font-family:'Cabinet Grotesk','Outfit',sans-serif;font-weight:700;font-size:clamp(44px,11.6vw,168px);line-height:1;letter-spacing:-.065em;white-space:nowrap;text-decoration:none;width:100%;padding:48px 0 46px}
+.footer-wordmark>span{min-width:0}
+.footer-botanical{display:grid;place-items:center;width:.6em;height:.7em;flex-shrink:0;color:#a9c28e;transform:rotate(-13deg);transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.footer-botanical svg{width:100%;height:100%}
+.footer-wordmark:hover .footer-botanical{transform:rotate(2deg) scale(1.08)}
+.footer-period{color:#cd9970}
+.footer-bottomline{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid #bdcfa333;padding-top:20px;color:#c3d0b9;font-size:12px;line-height:1.6}
+
+.garden-footer a:focus-visible{outline:2px solid #d9dea9;outline-offset:6px;border-radius:2px}
+@media(min-width:1600px){.garden-footer .footer-wordmark{font-size:180px}}
+@media(max-width:1150px){
+ .garden-footer .footer-inner{width:calc(100% - 64px)}
+ .garden-footer .footer-topline{align-items:flex-start;gap:24px}
+ .footer-navigation{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 32px;width:47%}
+ .garden-footer .footer-wordmark{padding-block:34px}
+}
+@media(max-width:650px){
+ .garden-footer .footer-inner{width:calc(100% - 40px);padding:28px 0 18px}
+ .garden-footer .footer-topline{flex-direction:column;gap:22px}
+ .garden-footer .footer-topline .footer-intro{max-width:none;font-size:13px;gap:10px}
+ .footer-navigation{width:100%;gap:2px 24px}
+ .footer-navigation a{font-size:13px;min-height:44px}
+ .garden-footer .footer-wordmark{font-size:clamp(35px,11.5vw,75px);padding:30px 0;gap:.1em}
+ .footer-bottomline{font-size:11px;gap:10px;padding-top:14px;align-items:center}
+ .footer-bottomline>span{max-width:180px}
+
+}
+@media(prefers-reduced-motion:reduce){.garden-footer *{transition:none!important}}
+
+.back-to-top{position:fixed;right:max(24px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));z-index:40;display:grid;place-items:center;width:50px;height:50px;border:1px solid #a9c28e;border-radius:50%;background:#173b2d;color:#f4f1e8;box-shadow:0 4px 18px #10281d26;cursor:pointer;transition:background .2s ease,transform .2s ease}
+.back-to-top:hover{background:#30583e;transform:translateY(-3px)}
+.back-to-top:focus-visible{outline:3px solid #cd9970;outline-offset:4px}
+@media(max-width:650px){.back-to-top{right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));width:46px;height:46px}.footer-bottomline{padding-right:58px}}
+@media(prefers-reduced-motion:reduce){.back-to-top{transition:none}.back-to-top:hover{transform:none}}

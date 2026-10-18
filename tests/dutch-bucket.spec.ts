@@ -11,14 +11,15 @@ test('Dutch Bucket home preview links to a bilingual chilli guide with distinct 
   await expect(page).toHaveURL(/plants\/chilli\?method=hydro&system=dutch-bucket#hydro-systems$/);
   await expect(page.locator('.system-card.selected')).toContainText('Dutch Bucket');
   await expect(page.locator('.equipment-guide')).toContainText('Screened drain elbows');
-  await page.locator('.system-start').getByRole('link').click();
+  await page.locator('.overview-copy .button.primary').click();
   await expect(page).toHaveURL(/learn\/chilli\/hydro\/prepare\?system=dutch-bucket$/);
   await page.getByRole('checkbox').first().check();
   await page.getByLabel('Hydroponic system', { exact: true }).selectOption('drip');
   await expect(page.getByRole('checkbox').first()).not.toBeChecked();
   await page.getByLabel('Hydroponic system', { exact: true }).selectOption('dutch-bucket');
   await page.reload();
-  await expect(page.getByRole('checkbox').first()).toBeChecked();
+  await page.locator('.task-dots button').first().click();
+  await expect(page.locator('.focused-task-actions input')).toBeChecked();
   await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
   await expect(page.getByLabel('Sistem hidroponik', { exact: true })).toHaveValue('dutch-bucket');
   await page.getByRole('button', { name: 'Diagram', exact: true }).click();

@@ -10,16 +10,19 @@ test('every crop has pH, PPM, EC and separate air and solution temperatures', as
     await expect(page.getByTestId('target-ppm')).toContainText(rangeText(ppmRange(target.ec, 500), 'en'));
     await expect(page.getByTestId('target-air')).toContainText(rangeText(target.air, 'en'));
     await expect(page.getByTestId('target-solution')).toContainText('22–24');
+    await page.locator('details').filter({ has: page.locator('.growing-targets') }).locator('summary').first().click();
     await page.locator('.target-details summary').click();
     await expect(page.locator('.target-sources a')).toHaveCount(new Set([target.nutrientSource.url, target.temperatureSource.url, 'https://extension.okstate.edu/fact-sheets/electrical-conductivity-and-ph-guide-for-hydroponics', 'https://support.bluelab.com/hc/en-us/articles/205237090-What-are-the-different-conductivity-scales-What-do-they-mean-']).size);
   }
 });
 test('PPM scale persists through reload, translation and system changes without changing EC', async ({ page }) => {
   await page.goto('/learn/pak-choi/hydro/prepare');
+  await page.getByText('Growing conditions & guidance', { exact: true }).click();
   await expect(page.locator('.target-stage-note')).toBeVisible();
   await page.getByRole('button', { name: 'PPM 700', exact: true }).click();
   await expect(page.getByTestId('target-ppm')).toHaveText('1,050–1,400 PPM');
   await page.reload();
+  await page.getByText('Growing conditions & guidance', { exact: true }).click();
   await expect(page.getByRole('button', { name: 'PPM 700', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
   await expect(page.getByTestId('target-ph')).toHaveText('5,5–6,5');
@@ -31,6 +34,7 @@ test('PPM scale persists through reload, translation and system changes without 
   await page.getByRole('button', { name: 'PPM 500', exact: true }).click();
   await expect(page.getByTestId('target-ppm')).toHaveText('750–1.000 PPM');
   await page.goto('/plants/pak-choi?method=soil');
+  await page.getByText('Kondisi tanam · pH, nutrisi & suhu', { exact: true }).click();
   await expect(page.getByTestId('target-air')).toBeVisible();
   await expect(page.getByTestId('target-ppm')).toHaveCount(0);
   await expect(page.locator('.target-scope')).toContainText('tidak mengukur kesuburan tanah');
@@ -41,6 +45,7 @@ test('measurement panel is usable at 320px in both languages and without storage
   for (const language of ['EN', 'ID']) {
     await page.goto('/learn/pak-choi/hydro/care?system=wick');
     await page.getByRole('button', { name: language === 'EN' ? 'English' : 'Bahasa Indonesia', exact: true }).click();
+    await page.locator('details').filter({ has: page.locator('.growing-targets') }).locator('summary').first().click();
     await page.locator('.target-details summary').click();
     await page.getByRole('button', { name: 'PPM 700', exact: true }).click();
     await expect(page.getByTestId('target-ppm')).toContainText(language === 'EN' ? '1,050–1,400' : '1.050–1.400');
@@ -51,6 +56,7 @@ test('measurement panel is usable at 320px in both languages and without storage
   }
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('/learn/pak-choi/hydro/prepare');
+  await page.getByText('Growing conditions & guidance', { exact: true }).click();
   await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
   await page.screenshot({ path: 'artifacts/growing-targets.png', fullPage: true });
 });

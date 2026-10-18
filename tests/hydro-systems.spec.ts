@@ -1,21 +1,22 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { completeActions } from './lesson-helpers';
 import { hydroSystems } from '../src/data/hydroSystems';
 
 test('system comparison, lesson selection and independent persisted progress', async ({ page }) => {
-  await page.goto('/plants/pak-choi?method=hydro');
+  await page.goto('/plants/pak-choi?method=hydro#hydro-systems');
   await expect(page.locator('.system-card')).toHaveCount(7);
   await page.getByRole('button', { name: 'Choose NFT', exact: true }).click();
   await expect(page).toHaveURL(/system=nft/);
-  await expect(page.locator('.system-start').getByRole('link')).toHaveAttribute('href', '/learn/pak-choi/hydro/prepare?system=nft');
-  await page.locator('.system-start').getByRole('link').click();
+  await expect(page.locator('.overview-copy .button.primary')).toHaveAttribute('href', '/learn/pak-choi/hydro/prepare?system=nft');
+  await page.locator('.overview-copy .button.primary').click();
   await expect(page).toHaveURL(/hydro\/prepare\?system=nft/);
-  await page.getByRole('checkbox').first().check();
+  await completeActions(page);
   await page.getByRole('radio').first().check();
   await page.getByLabel('Hydroponic system', { exact: true }).selectOption('dft');
   await expect(page).toHaveURL(/prepare\?system=dft/);
   await expect(page.getByRole('checkbox').first()).not.toBeChecked();
-  await expect(page.getByRole('radio').first()).not.toBeChecked();
+  await expect(page.getByRole('radio')).toHaveCount(0);
   await page.getByLabel('Hydroponic system', { exact: true }).selectOption('nft');
   await page.reload();
   await expect(page.getByRole('checkbox').first()).toBeChecked();
@@ -50,7 +51,7 @@ test('seven different WebGL setups, diagrams, hotspots and controls', async ({ p
 });
 
 test('crop suitability and unsupported system URLs', async ({ page }) => {
-  await page.goto('/plants/chilli?method=hydro');
+  await page.goto('/plants/chilli?method=hydro#hydro-systems');
   await expect(page.getByRole('button', { name: 'Choose NFT', exact: true })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Choose Wick', exact: true })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Choose DWC', exact: true })).toBeEnabled();
@@ -82,18 +83,18 @@ test('bilingual system pages are accessible and fit narrow screens', async ({ pa
 
 test('new overviews start with Wick while explicit and legacy system links stay intact', async ({ page }) => {
   for (const crop of ['pak-choi', 'amaranth', 'lettuce', 'chives']) {
-    await page.goto(`/plants/${crop}?method=hydro`);
+    await page.goto(`/plants/${crop}?method=hydro#hydro-systems`);
     await expect(page.getByRole('button', { name: 'Choose Wick', exact: true })).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('.system-start a')).toHaveAttribute('href', new RegExp('system=wick'));
+    await expect(page.locator('.overview-copy .button.primary')).toHaveAttribute('href', new RegExp('system=wick'));
   }
-  await page.locator('.system-start a').click();
+  await page.locator('.overview-copy .button.primary').click();
   await expect(page.getByLabel('Hydroponic system', { exact: true })).toHaveValue('wick');
-  await page.goto('/plants/pak-choi?method=hydro&system=nft');
+  await page.goto('/plants/pak-choi?method=hydro&system=nft#hydro-systems');
   await expect(page.getByRole('button', { name: 'Choose NFT', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await page.goto('/learn/pak-choi/hydro/care');
   await expect(page.getByLabel('Hydroponic system', { exact: true })).toHaveValue('kratky');
   for (const crop of ['water-spinach', 'chilli']) {
-    await page.goto(`/plants/${crop}?method=hydro`);
+    await page.goto(`/plants/${crop}?method=hydro#hydro-systems`);
     await expect(page.getByRole('button', { name: 'Choose DWC', exact: true })).toHaveAttribute('aria-pressed', 'true');
   }
 });

@@ -12,10 +12,14 @@
     "test:e2e": "playwright test",
     "check": "npm run check:content && npm test && npm run build",
     "motion:studio": "remotion studio src/remotion/index.tsx",
-    "motion:render": "remotion render src/remotion/index.tsx Photosynthesis-soil-en artifacts/photosynthesis-soil-en.mp4"
+    "motion:render": "remotion render src/remotion/index.tsx Photosynthesis-soil-en artifacts/photosynthesis-soil-en.mp4",
+    "motion:day:build": "tsx scripts/build-photosynthesis-day.tsx",
+    "prebuild": "npm run motion:day:build",
+    "motion:day:check": "npx hyperframes@0.8.169 check motion/photosynthesis-day"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@hyperframes/player": "0.8.169",
     "@react-three/drei": "^10.7.0",
     "@react-three/fiber": "^9.3.0",
     "@remotion/player": "4.0.534",
@@ -36,6 +40,7 @@
     "@types/react-dom": "^19.1.0",
     "@types/three": "^0.180.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "esbuild": "0.28.2",
     "tsx": "^4.20.0",
     "typescript": "~5.9.2",
     "vite": "^7.1.0",

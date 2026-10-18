@@ -33,9 +33,10 @@ test('simulation follows lesson and system, fits mobile and supports reduced mot
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('/learn/chilli/hydro/transplant?system=dutch-bucket');
+  await page.getByText('Watch this growth stage', { exact: true }).click();
   const simulation = page.locator('.growth-simulation');
   await expect(simulation.getByRole('button', { name: '03 Planting' })).toHaveAttribute('aria-pressed', 'true');
-  await expect(simulation.getByRole('button', { name: 'Play simulation', exact: true })).toBeDisabled();
+  await expect(simulation.getByRole('button', { name: 'Play simulation', exact: true })).toBeEnabled();
   await expect(simulation).toContainText('Reduced motion is on');
   await expect(simulation.getByRole('img')).toContainText('Dutch Bucket');
   await simulation.getByRole('button', { name: '05 Harvest' }).click();
@@ -54,4 +55,25 @@ test('simulation follows lesson and system, fits mobile and supports reduced mot
   await page.goto('/plants/chilli?method=hydro&system=dutch-bucket');
   await simulation.getByRole('button', { name: '05 Panen' }).click();
   await simulation.screenshot({ path: 'artifacts/growth-simulation-desktop.png' });
+});
+
+
+test('reduced motion allows explicit playback on the Indonesian hydroponic crop page', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/plants/pak-choi?method=hydro');
+  await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
+  const simulation = page.locator('.growth-simulation');
+  const timeline = simulation.getByRole('slider');
+  const initialFrame = await timeline.inputValue();
+  await page.waitForTimeout(250);
+  await expect(timeline).toHaveValue(initialFrame);
+  await simulation.getByRole('button', { name: 'Putar simulasi', exact: true }).click();
+  await expect(simulation.getByRole('button', { name: 'Jeda simulasi', exact: true })).toBeVisible();
+  await expect.poll(async () => Number(await timeline.inputValue())).toBeGreaterThan(Number(initialFrame) + 10);
+  await simulation.getByRole('button', { name: 'Jeda simulasi', exact: true }).click();
+  const pausedFrame = await timeline.inputValue();
+  await page.waitForTimeout(250);
+  await expect(timeline).toHaveValue(pausedFrame);
+  await simulation.getByRole('button', { name: 'Ulangi simulasi', exact: true }).click();
+  await expect(timeline).toHaveValue('0');
 });

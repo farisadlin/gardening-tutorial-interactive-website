@@ -14,7 +14,7 @@ test('overview preview supports camera controls, method changes and Indonesian',
   await expect(preview.locator('.static-diagram')).toBeVisible();
   await preview.getByRole('button', { name: 'View in 3D' }).click();
   await expect(preview.locator('canvas')).toBeVisible();
-  await page.getByRole('button', { name: /Hydroponics.*Compare/ }).click();
+  await page.getByRole('button', { name: /Hydroponics.*Grow with water/ }).click();
   await expect(preview.locator('.small-badge')).toContainText('DWC');
   await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
   await expect(page.getByRole('region', { name: 'Pratinjau tanaman interaktif' }).locator('canvas')).toBeVisible();

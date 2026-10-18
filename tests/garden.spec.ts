@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { completeActions } from './lesson-helpers';
 import { crops, stages, tutorials } from '../src/data/garden';
 test('crop search, difficulty, method routing and bilingual library', async ({ page }) => {
   await page.goto('/plants');
@@ -21,7 +22,7 @@ test('checklists and quizzes persist, separate growing methods, reset requires c
   await page.goto('/learn/pak-choi/soil/prepare');
   const next = page.getByRole('button', { name: 'Complete & continue' });
   await expect(next).toBeDisabled();
-  for (const input of await page.getByRole('checkbox').all()) await input.check();
+  await completeActions(page);
   await page.getByRole('radio').nth(1).check();
   await expect(page.getByText('Take another look.')).toBeVisible();
   await expect(next).toBeDisabled();
@@ -55,7 +56,7 @@ test('complete all six hydroponic steps and retain achievement after reload', as
   for (const step of tutorial.steps) {
     await expect(page).toHaveURL(new RegExp(`hydro/${step.id}$`));
     await expect(page.getByRole('heading', { name: step.title.en, exact: true })).toBeVisible();
-    for (const input of await page.getByRole('checkbox').all()) await input.check();
+    await completeActions(page);
     await page.getByRole('radio').nth(step.quiz.correct).check();
     await page.getByRole('button', { name: step.id === 'harvest' ? 'Finish this guide' : 'Complete & continue' }).click();
   }
@@ -106,8 +107,9 @@ test('all crop paths and step scenes exist in both languages', async ({ page }) 
     for (const crop of crops) for (const method of ['soil', 'hydro']) {
       await page.goto(`/learn/${crop.id}/${method}/harvest`);
       await expect(page.getByRole('heading', { name: language === 'en' ? 'Enjoy your first harvest' : 'Nikmati panen pertama' })).toBeVisible();
-      await expect(page.getByRole('checkbox')).toHaveCount(3);
-      await expect(page.getByRole('radio')).toHaveCount(2);
+      await expect(page.locator('.focused-task-actions input')).toHaveCount(1);
+      await expect(page.locator('.task-dots button')).toHaveCount(3);
+      await expect(page.getByRole('radio')).toHaveCount(0);
       await expect(page.locator('.step-nav a')).toHaveCount(6);
     }
   }
